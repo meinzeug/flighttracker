@@ -10,11 +10,9 @@ import {
 
 import { RadarMap } from './components/RadarMap';
 import { RadarScope } from './components/RadarScope';
-import { SupportCheckout } from './components/SupportCheckout';
 import { getSegmentColor } from './lib/segments';
 
-const SAVED_VIEWS_KEY = 'flighttracker.saved-views.v2';
-const WATCH_TERMS_KEY = 'flighttracker.watch-terms.v2';
+const WATCH_TERMS_KEY = 'flighttracker.watch-terms.v3';
 
 function formatCompactNumber(value, suffix = '') {
   return (
@@ -109,6 +107,35 @@ function toggleValue(values, value) {
   return values.includes(value) ? values.filter((entry) => entry !== value) : [...values, value];
 }
 
+function normalizeWatchTerm(value) {
+  return String(value ?? '').trim().toLowerCase();
+}
+
+function aircraftSearchBlob(entry) {
+  return [
+    entry.callsign,
+    entry.registration,
+    entry.icao24,
+    entry.model,
+    entry.typecode,
+    entry.operator,
+    entry.owner,
+    entry.originCountry,
+    entry.operationSegment,
+  ]
+    .filter(Boolean)
+    .join(' ')
+    .toLowerCase();
+}
+
+function matchesWatchTerm(entry, term) {
+  return aircraftSearchBlob(entry).includes(term);
+}
+
+function makeId(prefix) {
+  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+
 function groupByAircraft(items, keySelector, labelSelector, limit = 10) {
   const buckets = new Map();
 
@@ -137,32 +164,69 @@ function groupByAircraft(items, keySelector, labelSelector, limit = 10) {
     .slice(0, limit);
 }
 
-function normalizeWatchTerm(value) {
-  return String(value ?? '').trim().toLowerCase();
+function AccessScreen({ authBusy, authError, bootstrapRequired, loginForm, onSubmit, onUpdate }) {
+  return (
+    <main className="access-shell">
+      <section className="access-card">
+        <span className="eyebrow">Open World Picture</span>
+        <h1>Globale Live-Lage auf einer Karte.</h1>
+        <p>
+          Diese App zeigt oeffentlich beobachtbare Luftverkehrsdaten als fortlaufendes Weltbild.
+          Keine Geheimdienstmythen, sondern eine belegbare Live-Ansicht auf Basis offener Daten.
+        </p>
+        <form className="access-form" onSubmit={onSubmit}>
+          <label>
+            <span>Benutzername</span>
+            <input
+              type="text"
+              autoComplete="username"
+              value={loginForm.username}
+              onChange={(event) => onUpdate('username', event.target.value)}
+              placeholder="dennis.wicht@web.de"
+            />
+          </label>
+          <label>
+            <span>Passwort</span>
+            <input
+              type="password"
+              autoComplete={bootstrapRequired ? 'new-password' : 'current-password'}
+              value={loginForm.password}
+              onChange={(event) => onUpdate('password', event.target.value)}
+              placeholder="mindestens 8 Zeichen"
+            />
+          </label>
+          <button type="submit" className="action-button action-button--primary" disabled={authBusy}>
+            {authBusy ? 'Bitte warten ...' : bootstrapRequired ? 'Admin anlegen' : 'Anmelden'}
+          </button>
+        </form>
+        {authError ? <div className="inline-state inline-state--error">{authError}</div> : null}
+        <div className="access-footnotes">
+          <div>
+            <strong>Immer live</strong>
+            <span>automatischer Refresh der globalen Luftlage in kurzen Intervallen</span>
+          </div>
+          <div>
+            <strong>Eine Weltkarte</strong>
+            <span>die Hauptansicht bleibt global und nicht nur regional</span>
+          </div>
+          <div>
+            <strong>Oeffentliche Fakten</strong>
+            <span>sichtbar wird, was sich aus den offenen Live-Daten wirklich ableiten laesst</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  );
 }
 
-function aircraftSearchBlob(entry) {
-  return [
-    entry.callsign,
-    entry.registration,
-    entry.icao24,
-    entry.model,
-    entry.typecode,
-    entry.operator,
-    entry.owner,
-    entry.operationSegment,
-  ]
-    .filter(Boolean)
-    .join(' ')
-    .toLowerCase();
-}
-
-function matchesWatchTerm(entry, term) {
-  return aircraftSearchBlob(entry).includes(term);
-}
-
-function makeId(prefix) {
-  return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+function MetricCard({ eyebrow, value, caption, tone }) {
+  return (
+    <article className={`metric-card metric-card--${tone}`}>
+      <span className="metric-card__eyebrow">{eyebrow}</span>
+      <strong className="metric-card__value">{value}</strong>
+      <span className="metric-card__caption">{caption}</span>
+    </article>
+  );
 }
 
 function FilterGroup({ title, values, selected, onToggle }) {
@@ -186,16 +250,6 @@ function FilterGroup({ title, values, selected, onToggle }) {
         })}
       </div>
     </section>
-  );
-}
-
-function MetricCard({ eyebrow, value, caption, tone }) {
-  return (
-    <article className={`metric-card metric-card--${tone}`}>
-      <span className="metric-card__eyebrow">{eyebrow}</span>
-      <strong className="metric-card__value">{value}</strong>
-      <span className="metric-card__caption">{caption}</span>
-    </article>
   );
 }
 
@@ -223,12 +277,68 @@ function BreakdownPanel({ title, rows }) {
   );
 }
 
+function SelectedFlightCard({ aircraft }) {
+  if (!aircraft) {
+    return (
+      <section className="panel panel--selected">
+        <div className="panel__header">
+          <h3>Ausgewaehltes Ziel</h3>
+        </div>
+        <p className="panel-copy">Tippe auf der Weltkarte auf ein Flugzeug oder waehle einen Eintrag im Flight Deck.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="panel panel--selected">
+      <div className="panel__header">
+        <div>
+          <h3>{primaryLabel(aircraft)}</h3>
+          <span>{secondaryLabel(aircraft) || aircraft.originCountry || 'Unbekannt'}</span>
+        </div>
+        <span className="status-tag">{aircraft.operationSegment ?? 'Unknown'}</span>
+      </div>
+      <div className="selected-grid">
+        <div>
+          <span className="detail-label">Hoehe</span>
+          <strong>{formatAltitude(aircraft.geoAltitudeM ?? aircraft.baroAltitudeM)}</strong>
+        </div>
+        <div>
+          <span className="detail-label">Speed</span>
+          <strong>{formatSpeed(aircraft.velocityMps)}</strong>
+        </div>
+        <div>
+          <span className="detail-label">Kurs</span>
+          <strong>{formatHeading(aircraft.trackDeg)}</strong>
+        </div>
+        <div>
+          <span className="detail-label">Typ</span>
+          <strong>{aircraft.typecode ?? aircraft.typeFamily ?? 'n/a'}</strong>
+        </div>
+        <div>
+          <span className="detail-label">Fuel / h</span>
+          <strong>{formatCompactNumber(aircraft.fuelLitersPerHour, ' L')}</strong>
+        </div>
+        <div>
+          <span className="detail-label">CO2 / h</span>
+          <strong>{formatCompactNumber(aircraft.co2KgPerHour, ' kg')}</strong>
+        </div>
+      </div>
+      <div className="selected-position">
+        <span>
+          {formatCoordinate(aircraft.latitude, 'N', 'S')} / {formatCoordinate(aircraft.longitude, 'E', 'W')}
+        </span>
+      </div>
+    </section>
+  );
+}
+
 function FlightDeckPanel({ rows, selectedAircraftIcao24, onSelectAircraft, onQuickWatch }) {
   return (
     <section className="panel">
       <div className="panel__header">
         <h3>Flight Deck</h3>
-        <span>kritischste Ziele im aktuellen Filter</span>
+        <span>schwerste Emittenten im aktuellen Weltbild</span>
       </div>
       <div className="flight-deck">
         {rows.map((entry) => {
@@ -245,16 +355,12 @@ function FlightDeckPanel({ rows, selectedAircraftIcao24, onSelectAircraft, onQui
                   <span>{secondaryLabel(entry) || entry.operationSegment}</span>
                 </div>
                 <div className="flight-row__meta">
-                  <span>{entry.operationSegment}</span>
+                  <span>{entry.operationSegment ?? 'Unknown'}</span>
                   <strong>{formatCompactNumber(entry.co2KgPerHour, ' kg')}</strong>
                 </div>
               </button>
               <span className="flight-row__action">
-                <button
-                  type="button"
-                  className="mini-button"
-                  onClick={() => onQuickWatch(primaryLabel(entry))}
-                >
+                <button type="button" className="mini-button" onClick={() => onQuickWatch(primaryLabel(entry))}>
                   Watch
                 </button>
               </span>
@@ -266,136 +372,6 @@ function FlightDeckPanel({ rows, selectedAircraftIcao24, onSelectAircraft, onQui
   );
 }
 
-function SelectedFlightCard({ aircraft, onWatch, onReturnToLive }) {
-  if (!aircraft) {
-    return (
-      <section className="panel panel--selected">
-        <div className="panel__header">
-          <h3>Zielauswahl</h3>
-        </div>
-        <p className="panel-copy">Tippe auf ein Flugzeug oder waehle einen Eintrag im Flight Deck.</p>
-      </section>
-    );
-  }
-
-  return (
-    <section className="panel panel--selected">
-      <div className="panel__header">
-        <div>
-          <h3>{primaryLabel(aircraft)}</h3>
-          <span>{secondaryLabel(aircraft) || aircraft.originCountry}</span>
-        </div>
-        <span className="status-tag">{aircraft.operationSegment}</span>
-      </div>
-      <div className="selected-grid">
-        <div>
-          <span className="detail-label">Hoehe</span>
-          <strong>{formatAltitude(aircraft.geoAltitudeM ?? aircraft.baroAltitudeM)}</strong>
-        </div>
-        <div>
-          <span className="detail-label">Speed</span>
-          <strong>{formatSpeed(aircraft.velocityMps)}</strong>
-        </div>
-        <div>
-          <span className="detail-label">Kurs</span>
-          <strong>{formatHeading(aircraft.trackDeg)}</strong>
-        </div>
-        <div>
-          <span className="detail-label">Engine</span>
-          <strong>{aircraft.engineType ?? 'n/a'}</strong>
-        </div>
-        <div>
-          <span className="detail-label">Fuel / h</span>
-          <strong>{formatCompactNumber(aircraft.fuelLitersPerHour, ' L')}</strong>
-        </div>
-        <div>
-          <span className="detail-label">CO2 / h</span>
-          <strong>{formatCompactNumber(aircraft.co2KgPerHour, ' kg')}</strong>
-        </div>
-      </div>
-      <div className="selected-position">
-        <span>
-          {formatCoordinate(aircraft.latitude, 'N', 'S')} / {formatCoordinate(aircraft.longitude, 'E', 'W')}
-        </span>
-      </div>
-      <div className="button-row">
-        <button type="button" className="action-button" onClick={() => onWatch(primaryLabel(aircraft))}>
-          Ziel watchen
-        </button>
-        <button type="button" className="ghost-button" onClick={onReturnToLive}>
-          Zurueck zu Live
-        </button>
-      </div>
-    </section>
-  );
-}
-
-function AccessScreen({
-  authBusy,
-  authError,
-  bootstrapRequired,
-  loginForm,
-  onSubmit,
-  onUpdate,
-}) {
-  return (
-    <main className="access-shell">
-      <section className="access-card">
-        <span className="eyebrow">FlightTracker Command Grid</span>
-        <h1>Souveraene Luftlage. Live auf jedem Geraet.</h1>
-        <p>
-          Mobile-first Radarprodukt fuer lokale Deployments, sensible Lagebilder und eine unabhaengige
-          Flugbeobachtung ohne fremde Plattformbindung.
-        </p>
-        <form className="access-form" onSubmit={onSubmit}>
-          <label>
-            <span>Benutzername</span>
-            <input
-              type="text"
-              autoComplete="username"
-              value={loginForm.username}
-              onChange={(event) => onUpdate('username', event.target.value)}
-              placeholder="operations"
-            />
-          </label>
-          <label>
-            <span>Passwort</span>
-            <input
-              type="password"
-              autoComplete={bootstrapRequired ? 'new-password' : 'current-password'}
-              value={loginForm.password}
-              onChange={(event) => onUpdate('password', event.target.value)}
-              placeholder="mindestens 10 Zeichen"
-            />
-          </label>
-          <button type="submit" className="action-button action-button--primary" disabled={authBusy}>
-            {authBusy
-              ? 'Bitte warten ...'
-              : bootstrapRequired
-                ? 'Admin-Zugang einrichten'
-                : 'Anmelden'}
-          </button>
-        </form>
-        {authError ? <div className="inline-state inline-state--error">{authError}</div> : null}
-        <div className="access-footnotes">
-          <div>
-            <strong>Mobile first</strong>
-            <span>kompakt auf Telefon, taktisch auf Tablet, vollstaendig am Desktop</span>
-          </div>
-          <div>
-            <strong>Geschuetzt</strong>
-            <span>Live-API nur nach Login, Session als HttpOnly-Cookie</span>
-          </div>
-          <div>
-            <strong>Produktlinie</strong>
-            <span>Radar, Watchlists, Playback, Support-Checkout und lokale Kiosk-Deployments</span>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
-}
-
 export default function App() {
   const [session, setSession] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -403,6 +379,7 @@ export default function App() {
   const [authError, setAuthError] = useState(null);
   const [bootstrapRequired, setBootstrapRequired] = useState(false);
   const [loginForm, setLoginForm] = useState({ username: '', password: '' });
+
   const [snapshot, setSnapshot] = useState(null);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -411,16 +388,12 @@ export default function App() {
   const [emitterFilters, setEmitterFilters] = useState([]);
   const [engineFilters, setEngineFilters] = useState([]);
   const [radarCenter, setRadarCenter] = useState({ lat: 18, lon: 11.5 });
-  const [selectedFrame, setSelectedFrame] = useState(null);
-  const [savedViews, setSavedViews] = useState(() => loadLocalState(SAVED_VIEWS_KEY, []));
-  const [presetName, setPresetName] = useState('');
+  const [selectedAircraftIcao24, setSelectedAircraftIcao24] = useState(null);
   const [watchTerms, setWatchTerms] = useState(() => loadLocalState(WATCH_TERMS_KEY, []));
   const [watchInput, setWatchInput] = useState('');
   const [alertEvents, setAlertEvents] = useState([]);
-  const [selectedAircraftIcao24, setSelectedAircraftIcao24] = useState(null);
-  const [paymentConfig, setPaymentConfig] = useState(null);
-  const seenWatchTermsRef = useRef(new Set());
 
+  const seenWatchTermsRef = useRef(new Set());
   const deferredSearch = useDeferredValue(search);
 
   const refreshSession = useEffectEvent(async () => {
@@ -448,15 +421,10 @@ export default function App() {
     }
 
     try {
-      const response = await fetch(
-        selectedFrame ? `/api/live?at=${encodeURIComponent(selectedFrame)}` : '/api/live',
-        { credentials: 'include' },
-      );
-
+      const response = await fetch('/api/live', { credentials: 'include' });
       if (response.status === 401) {
         setSession(null);
         setSnapshot(null);
-        setBootstrapRequired(false);
         return;
       }
 
@@ -471,27 +439,9 @@ export default function App() {
         setError(null);
       });
     } catch (requestError) {
-      setError(requestError instanceof Error ? requestError.message : 'Unbekannter Fehler');
+      setError(requestError instanceof Error ? requestError.message : 'Live-Daten konnten nicht geladen werden.');
     } finally {
       setLoading(false);
-    }
-  });
-
-  const refreshPayments = useEffectEvent(async () => {
-    if (!session) {
-      setPaymentConfig(null);
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/payments/config', { credentials: 'include' });
-      if (!response.ok) {
-        throw new Error('Payments konnten nicht geladen werden.');
-      }
-
-      setPaymentConfig(await response.json());
-    } catch {
-      setPaymentConfig(null);
     }
   });
 
@@ -502,26 +452,20 @@ export default function App() {
   useEffect(() => {
     if (!session) {
       setSnapshot(null);
-      setPaymentConfig(null);
       return;
     }
 
     refreshSnapshot();
-    refreshPayments();
-  }, [refreshPayments, refreshSnapshot, selectedFrame, session]);
+  }, [refreshSnapshot, session]);
 
   useEffect(() => {
-    if (!session || selectedFrame) {
+    if (!session) {
       return undefined;
     }
 
-    const timer = window.setInterval(() => refreshSnapshot({ silent: true }), 20_000);
+    const timer = window.setInterval(() => refreshSnapshot({ silent: true }), 15_000);
     return () => window.clearInterval(timer);
-  }, [refreshSnapshot, selectedFrame, session]);
-
-  useEffect(() => {
-    persistLocalState(SAVED_VIEWS_KEY, savedViews);
-  }, [savedViews]);
+  }, [refreshSnapshot, session]);
 
   useEffect(() => {
     persistLocalState(WATCH_TERMS_KEY, watchTerms);
@@ -552,21 +496,13 @@ export default function App() {
 
     if (newEvents.length) {
       setAlertEvents((current) => [...newEvents, ...current].slice(0, 10));
-
-      if (typeof window !== 'undefined' && 'Notification' in window && window.Notification.permission === 'granted') {
-        for (const event of newEvents) {
-          new window.Notification(`FlightTracker Alert: ${event.term}`, {
-            body: event.hits.length ? `Treffer: ${event.hits.join(', ')}` : 'Neue Treffer im Live-Feed',
-          });
-        }
-      }
     }
 
     seenWatchTermsRef.current = nextSeen;
   }, [snapshot, watchTerms]);
 
-  const query = deferredSearch.trim().toLowerCase();
   const allAircraft = snapshot?.aircraft ?? [];
+  const query = deferredSearch.trim().toLowerCase();
   const filteredAircraft = allAircraft.filter((entry) => {
     const segmentMatch = !segmentFilters.length || segmentFilters.includes(entry.operationSegment);
     const emitterMatch = !emitterFilters.length || emitterFilters.includes(entry.emitterCategory);
@@ -589,27 +525,28 @@ export default function App() {
     [filteredAircraft],
   );
 
+  useEffect(() => {
+    const nextSelection = trafficRows[0]?.icao24 ?? null;
+    if (!selectedAircraftIcao24 && nextSelection) {
+      setSelectedAircraftIcao24(nextSelection);
+      return;
+    }
+
+    if (selectedAircraftIcao24 && !filteredAircraft.some((entry) => entry.icao24 === selectedAircraftIcao24)) {
+      setSelectedAircraftIcao24(nextSelection);
+    }
+  }, [filteredAircraft, selectedAircraftIcao24, trafficRows]);
+
   const selectedAircraft = useMemo(
     () => filteredAircraft.find((entry) => entry.icao24 === selectedAircraftIcao24) ?? trafficRows[0] ?? null,
     [filteredAircraft, selectedAircraftIcao24, trafficRows],
   );
 
-  useEffect(() => {
-    const nextIcao24 = trafficRows[0]?.icao24 ?? null;
-    if (!selectedAircraftIcao24 && nextIcao24) {
-      setSelectedAircraftIcao24(nextIcao24);
-      return;
-    }
-
-    if (selectedAircraftIcao24 && !filteredAircraft.some((entry) => entry.icao24 === selectedAircraftIcao24)) {
-      setSelectedAircraftIcao24(nextIcao24);
-    }
-  }, [filteredAircraft, selectedAircraftIcao24, trafficRows]);
-
   const bySegment = useMemo(
     () => groupByAircraft(filteredAircraft, (entry) => entry.operationSegment, (entry) => entry.operationSegment),
     [filteredAircraft],
   );
+
   const byType = useMemo(
     () =>
       groupByAircraft(
@@ -620,39 +557,6 @@ export default function App() {
     [filteredAircraft],
   );
 
-  const playbackFrames = snapshot?.playback?.frames ?? [];
-  const effectiveSelectedFrame = snapshot?.playback?.selectedObservedAt ?? selectedFrame;
-  const playbackIndex = effectiveSelectedFrame
-    ? Math.max(
-        playbackFrames.findIndex((frame) => frame.observedAt === effectiveSelectedFrame),
-        0,
-      )
-    : Math.max(playbackFrames.length - 1, 0);
-
-  function saveCurrentView() {
-    const name = presetName.trim() || `View ${savedViews.length + 1}`;
-    setSavedViews((current) => [
-      {
-        id: makeId('view'),
-        name,
-        search,
-        segmentFilters,
-        emitterFilters,
-        engineFilters,
-        savedAt: new Date().toISOString(),
-      },
-      ...current,
-    ].slice(0, 10));
-    setPresetName('');
-  }
-
-  function applySavedView(view) {
-    setSearch(view.search ?? '');
-    setSegmentFilters(view.segmentFilters ?? []);
-    setEmitterFilters(view.emitterFilters ?? []);
-    setEngineFilters(view.engineFilters ?? []);
-  }
-
   function addWatchTerm(value) {
     const normalized = normalizeWatchTerm(value);
     if (!normalized) {
@@ -661,16 +565,6 @@ export default function App() {
 
     setWatchTerms((current) => (current.includes(normalized) ? current : [normalized, ...current].slice(0, 12)));
     setWatchInput('');
-  }
-
-  async function requestNotifications() {
-    if (typeof window === 'undefined' || !('Notification' in window)) {
-      return;
-    }
-
-    if (window.Notification.permission === 'default') {
-      await window.Notification.requestPermission();
-    }
   }
 
   async function handleAuthSubmit(event) {
@@ -711,7 +605,7 @@ export default function App() {
 
     setSession(null);
     setSnapshot(null);
-    setSelectedFrame(null);
+    setSelectedAircraftIcao24(null);
     setError(null);
   }
 
@@ -736,20 +630,21 @@ export default function App() {
     <main className="app-shell">
       <header className="topbar panel">
         <div className="topbar__copy">
-          <span className="eyebrow">FlightTracker Command Grid</span>
-          <h1>Souveraene Luftlage statt Plattform-Abhaengigkeit.</h1>
+          <span className="eyebrow">Open World Picture</span>
+          <h1>Eine globale Live-Karte statt einzelner Ausschnitte.</h1>
           <p>
-            Mobile-first Radarprodukt mit Login, Live-Fluglage, Emissionsanalyse, Watchlists,
-            Playback und einem klaren Produktpfad fuer lokale Kontrollraeume und Kiosk-Deployments.
+            Die Hauptansicht bleibt weltweit. Sichtbar ist, was sich aus den laufenden oeffentlichen
+            Luftverkehrsdaten wirklich belegen laesst: Flugbewegungen, Typen, Emissionen und Dichte.
           </p>
         </div>
         <div className="topbar__actions">
           <div className="status-ribbon">
             <span className={`live-pill ${snapshot?.stale ? 'is-stale' : 'is-live'}`}>
-              {snapshot?.mode === 'playback' ? 'Playback' : snapshot?.stale ? 'Stale Snapshot' : 'Live Grid'}
+              {snapshot?.stale ? 'Stale Snapshot' : 'Live Grid'}
             </span>
             <span className="status-pill">User {session.username}</span>
             <span className="status-pill">Stand {formatTime(snapshot?.observedAt)}</span>
+            <span className="status-pill">Refresh 15s</span>
           </div>
           <div className="search-box">
             <input
@@ -774,13 +669,13 @@ export default function App() {
         <MetricCard
           eyebrow="Aktive Ziele"
           value={snapshot ? formatInteger(filteredAircraft.length) : '...'}
-          caption="im aktuellen Filter"
+          caption="weltweit im aktuellen Filter"
           tone="lime"
         />
         <MetricCard
           eyebrow="Kerosin / Stunde"
           value={snapshot ? `${formatCompactNumber(filteredTotals.fuelLitersPerHour)} L` : '...'}
-          caption="momentane Verbrauchsschaetzung"
+          caption="Schaetzung fuer das sichtbare Weltbild"
           tone="amber"
         />
         <MetricCard
@@ -801,12 +696,12 @@ export default function App() {
         <article className="panel panel--map-stage">
           <div className="panel__header">
             <div>
-              <h2>Live Radar</h2>
-              <span>{formatInteger(filteredAircraft.length)} Ziele sichtbar</span>
+              <h2>Globale Live-Karte</h2>
+              <span>{formatInteger(filteredAircraft.length)} Flugzeuge im aktuellen Bild</span>
             </div>
             <div className="stage-badges">
               <span className="status-tag">Center {radarCenter.lat.toFixed(1)} / {radarCenter.lon.toFixed(1)}</span>
-              <span className="status-tag">Tippen zum Tracken</span>
+              <span className="status-tag">Weltweit zoombar</span>
             </div>
           </div>
           <RadarMap
@@ -818,25 +713,19 @@ export default function App() {
           <div className="map-footer">
             <div className="chip-list chip-list--legend">
               {(snapshot?.filters?.segments ?? []).slice(0, 6).map((segment) => (
-                <span
-                  key={segment}
-                  className="legend-chip"
-                  style={{ '--legend-color': getSegmentColor(segment) }}
-                >
+                <span key={segment} className="legend-chip" style={{ '--legend-color': getSegmentColor(segment) }}>
                   {segment}
                 </span>
               ))}
             </div>
-            <span className="map-footer__hint">Canvas-Flugdarstellung, Live-Refresh alle 20 Sekunden</span>
+            <span className="map-footer__hint">
+              Live-Refresh alle 15 Sekunden, kurze Server-TTL und globale Hauptkarte statt Regionalmodus
+            </span>
           </div>
         </article>
 
         <aside className="stack-column">
-          <SelectedFlightCard
-            aircraft={selectedAircraft}
-            onWatch={addWatchTerm}
-            onReturnToLive={() => setSelectedFrame(null)}
-          />
+          <SelectedFlightCard aircraft={selectedAircraft} />
 
           <section className="panel">
             <div className="panel__header">
@@ -848,70 +737,8 @@ export default function App() {
 
           <section className="panel">
             <div className="panel__header">
-              <h3>Playback & Views</h3>
-              <button type="button" className="mini-button" onClick={() => setSelectedFrame(null)}>
-                Live
-              </button>
-            </div>
-            <div className="section-label">Global Playback</div>
-            <input
-              type="range"
-              className="timeline-range"
-              min="0"
-              max={Math.max(playbackFrames.length - 1, 0)}
-              value={playbackIndex}
-              disabled={playbackFrames.length < 2}
-              onChange={(event) => {
-                const frame = playbackFrames[Number(event.target.value)];
-                if (frame) {
-                  setSelectedFrame(frame.observedAt);
-                }
-              }}
-            />
-            <div className="playback-meta">
-              <span>{playbackFrames.length ? `${playbackFrames.length} Frames gepuffert` : 'noch kein Verlauf'}</span>
-              <strong>{formatTime(snapshot?.observedAt)}</strong>
-            </div>
-            <div className="section-label">Saved View</div>
-            <div className="inline-form">
-              <input
-                type="text"
-                value={presetName}
-                onChange={(event) => setPresetName(event.target.value)}
-                placeholder="Name fuer aktuellen Filterzustand"
-              />
-              <button type="button" className="action-button" onClick={saveCurrentView}>
-                Sichern
-              </button>
-            </div>
-            <div className="saved-list">
-              {savedViews.map((view) => (
-                <div key={view.id} className="saved-item">
-                  <button type="button" className="mini-button" onClick={() => applySavedView(view)}>
-                    Laden
-                  </button>
-                  <div>
-                    <strong>{view.name}</strong>
-                    <span>{new Date(view.savedAt).toLocaleString('de-DE')}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="mini-button mini-button--danger"
-                    onClick={() => setSavedViews((current) => current.filter((entry) => entry.id !== view.id))}
-                  >
-                    X
-                  </button>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          <section className="panel">
-            <div className="panel__header">
               <h3>Watchlist</h3>
-              <button type="button" className="mini-button" onClick={requestNotifications}>
-                Browser Alerts
-              </button>
+              <span>live beobachtete Begriffe</span>
             </div>
             <div className="inline-form">
               <input
@@ -950,18 +777,8 @@ export default function App() {
 
           <section className="panel">
             <div className="panel__header">
-              <h3>Support & Umsatz</h3>
-              <span>PayPal Command Pass</span>
-            </div>
-            <p className="panel-copy">
-              Monetarisierung ohne Datenverkauf: direkter Support fuer Betrieb, Datenpflege und lokale Deployments.
-            </p>
-            <SupportCheckout config={paymentConfig} />
-          </section>
-
-          <section className="panel">
-            <div className="panel__header">
               <h3>Filter</h3>
+              <span>globale Sicht eingrenzen</span>
             </div>
             {snapshot ? (
               <>
