@@ -1,10 +1,13 @@
 import { LIVE_CACHE_TTL_MS, LIVE_URL } from './config.js';
 
+const MAX_HISTORY_FRAMES = 24;
+
 let liveCache = {
   data: null,
   fetchedAt: 0,
   inFlight: null,
 };
+const liveHistory = [];
 
 function toNumber(value) {
   return typeof value === 'number' ? value : null;
@@ -79,6 +82,59 @@ async function fetchLiveData() {
   };
 }
 
+function storeHistoryFrame(snapshot) {
+  if (liveHistory[0]?.observedAt === snapshot.observedAt) {
+    return;
+  }
+
+  liveHistory.unshift({
+    observedAt: snapshot.observedAt,
+    fetchedAt: snapshot.fetchedAt,
+    states: snapshot.states,
+  });
+
+  if (liveHistory.length > MAX_HISTORY_FRAMES) {
+    liveHistory.length = MAX_HISTORY_FRAMES;
+  }
+}
+
+export function getPlaybackFrames() {
+  return [...liveHistory]
+    .map((frame) => ({
+      observedAt: frame.observedAt,
+      aircraftCount: frame.states.length,
+    }))
+    .reverse();
+}
+
+export async function getSnapshotAt(observedAt) {
+  if (!liveHistory.length) {
+    await getLiveSnapshot();
+  }
+
+  const requestedAt = Date.parse(observedAt ?? '');
+  if (!Number.isFinite(requestedAt) || !liveHistory.length) {
+    return null;
+  }
+
+  let nearest = liveHistory[0];
+  let nearestDelta = Math.abs(Date.parse(liveHistory[0].observedAt) - requestedAt);
+
+  for (const frame of liveHistory) {
+    const delta = Math.abs(Date.parse(frame.observedAt) - requestedAt);
+    if (delta < nearestDelta) {
+      nearest = frame;
+      nearestDelta = delta;
+    }
+  }
+
+  return {
+    ...nearest,
+    stale: true,
+    playback: true,
+  };
+}
+
 export async function getLiveSnapshot() {
   const now = Date.now();
   if (liveCache.data && now - liveCache.fetchedAt < LIVE_CACHE_TTL_MS) {
@@ -93,6 +149,7 @@ export async function getLiveSnapshot() {
     .then((data) => {
       liveCache.data = data;
       liveCache.fetchedAt = Date.now();
+      storeHistoryFrame(data);
       return { ...data, stale: false };
     })
     .catch((error) => {

@@ -11,9 +11,9 @@ app.get('/api/health', (_request, response) => {
   response.json({ ok: true, service: 'flighttracker-server' });
 });
 
-app.get('/api/live', async (_request, response) => {
+app.get('/api/live', async (request, response) => {
   try {
-    const snapshot = await buildDashboardSnapshot();
+    const snapshot = await buildDashboardSnapshot({ at: request.query.at ?? null });
     response.json(snapshot);
   } catch (error) {
     response.status(502).json({

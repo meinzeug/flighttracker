@@ -1,6 +1,6 @@
 import { classifyAircraft } from './classification.js';
 import { estimateEmissions } from './emissions.js';
-import { getLiveSnapshot } from './live-service.js';
+import { getLiveSnapshot, getPlaybackFrames, getSnapshotAt } from './live-service.js';
 import { getMetadataStatus, getTypeRecord, resolveAircraftMetadata } from './metadata-service.js';
 
 function topBuckets(items, keyFn, labelFn, limit = 10) {
@@ -39,8 +39,8 @@ function topBuckets(items, keyFn, labelFn, limit = 10) {
     }));
 }
 
-export async function buildDashboardSnapshot() {
-  const live = await getLiveSnapshot();
+export async function buildDashboardSnapshot({ at = null } = {}) {
+  const live = at ? (await getSnapshotAt(at)) ?? (await getLiveSnapshot()) : await getLiveSnapshot();
   const metadata = await resolveAircraftMetadata(live.states.map((state) => state.icao24));
   const aircraft = [];
 
@@ -94,6 +94,7 @@ export async function buildDashboardSnapshot() {
     fetchedAt: live.fetchedAt,
     stale: live.stale ?? false,
     warning: live.error ?? null,
+    mode: live.playback ? 'playback' : 'live',
     totals: {
       airborneAircraft: aircraft.length,
       fuelKgPerHour: Math.round(totals.fuelKgPerHour),
@@ -131,6 +132,12 @@ export async function buildDashboardSnapshot() {
         },
         16,
       ),
+    },
+    playback: {
+      active: Boolean(live.playback),
+      requestedAt: at,
+      selectedObservedAt: live.observedAt,
+      frames: getPlaybackFrames(),
     },
     aircraft,
     assumptions: {

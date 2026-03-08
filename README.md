@@ -5,6 +5,9 @@ Live-Flugradar mit OpenSky, Typanalyse und einer transparenten Emissionsschaetzu
 ## Was das Projekt macht
 
 - zeigt live die aktuell in der Luft erfassten Flugzeuge
+- bietet ein serverseitig gepuffertes Global-Playback fuer die letzten Snapshots
+- speichert Filteransichten lokal als wiederverwendbare Views
+- unterstuetzt Watchlist-Alerts fuer Callsigns, Registrierungen, ICAO24 und Typen
 - gruppiert nach Betriebssegmenten wie `Passenger`, `Cargo`, `Military / Government`, `Business / Private`, `Rotorcraft` und weiteren Klassen
 - schaetzt pro Flugzeug und fuer die Gesamtflotte den momentanen Kerosinverbrauch sowie den direkten `CO2`-Ausstoss
 - bietet ein Browser-Frontend mit Radar-Look, interaktiver Weltkarte und Filterleisten
@@ -16,6 +19,7 @@ Live-Flugradar mit OpenSky, Typanalyse und einer transparenten Emissionsschaetzu
 - Karten-/Radar-Layer: `MapLibre GL JS` + `deck.gl`
 - Backend: `Express`
 - Live-Daten: OpenSky `states/all?extended=1`
+- Playback: serverseitige Snapshot-Historie im API-Layer
 - Typ-/Metadaten: OpenSky Aircraft Database + DOC8643 Aircraft Types
 - schneller Typ-Lookup: lokaler `SQLite`-Index, einmalig aus der OpenSky-CSV aufgebaut
 
@@ -91,7 +95,7 @@ DOC8643_URL=https://s3.opensky-network.org/data-samples/metadata/doc8643Aircraft
 3. Fuer unbekannte `icao24`-Kennungen werden Typ- und Betreiberinfos aus einem lokalen SQLite-Lookup gelesen.
 4. Die App klassifiziert jedes Flugzeug heuristisch in ein Betriebssegment.
 5. Ein Schaetzmodell berechnet daraus `fuel kg/h`, `fuel L/h` und `CO2 kg/h`.
-6. Das Frontend visualisiert die Flotte als Radar-Karte, Scope und Analyse-Dashboard.
+6. Das Frontend visualisiert die Flotte als Radar-Karte, Scope, Playback, Saved Views, Alerts und Analyse-Dashboard.
 
 ## Fachliche Hinweise
 

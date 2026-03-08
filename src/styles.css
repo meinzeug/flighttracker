@@ -177,6 +177,11 @@ input {
   margin-top: 18px;
 }
 
+.panel-copy {
+  margin: 0 0 14px;
+  color: var(--text-dim);
+}
+
 .search-box input {
   width: min(420px, 100%);
   background: rgba(255, 255, 255, 0.04);
@@ -218,11 +223,16 @@ input {
   background: color-mix(in srgb, var(--chip-color) 18%, rgba(255, 255, 255, 0.03));
 }
 
+.premium-grid,
 .radar-layout,
 .analytics-grid {
   display: grid;
   gap: 18px;
   margin-top: 18px;
+}
+
+.premium-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
 .radar-layout {
@@ -294,6 +304,108 @@ input {
   background: #04130f;
 }
 
+.timeline-meta,
+.inline-form,
+.saved-list,
+.saved-list__item,
+.alert-feed,
+.feature-list {
+  display: grid;
+  gap: 12px;
+}
+
+.timeline-meta {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  margin-bottom: 12px;
+  color: var(--text-dim);
+}
+
+.timeline-range {
+  width: 100%;
+  accent-color: #8fffc4;
+}
+
+.inline-form {
+  grid-template-columns: 1fr auto;
+}
+
+.inline-form input {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.04);
+  color: #effff5;
+  border: 1px solid rgba(143, 255, 196, 0.14);
+  border-radius: 14px;
+  padding: 12px 16px;
+}
+
+.action-button,
+.mini-button {
+  border: 1px solid rgba(143, 255, 196, 0.18);
+  background: rgba(143, 255, 196, 0.08);
+  color: #effff5;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.action-button {
+  padding: 11px 14px;
+}
+
+.mini-button {
+  padding: 8px 12px;
+}
+
+.mini-button--danger {
+  border-color: rgba(255, 107, 107, 0.22);
+  background: rgba(255, 107, 107, 0.08);
+}
+
+.saved-list {
+  margin-top: 14px;
+}
+
+.saved-list__item {
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(143, 255, 196, 0.08);
+}
+
+.saved-list__item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.saved-list__item span,
+.alert-feed small {
+  color: var(--text-dim);
+}
+
+.watch-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.alert-feed {
+  margin-top: 14px;
+}
+
+.alert-feed__item {
+  display: grid;
+  gap: 6px;
+  padding: 12px 0;
+  border-top: 1px solid rgba(143, 255, 196, 0.08);
+}
+
+.alert-feed__item:first-child {
+  border-top: 0;
+  padding-top: 0;
+}
+
 .analytics-grid {
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
@@ -326,6 +438,42 @@ input {
   text-align: right;
 }
 
+.traffic-table {
+  display: grid;
+  gap: 10px;
+  font-size: 0.94rem;
+}
+
+.traffic-table__head,
+.traffic-table__row {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr 1.1fr 0.8fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.traffic-table__head {
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(143, 255, 196, 0.12);
+  color: var(--text-dim);
+  font: 500 0.8rem 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.traffic-table__row {
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(143, 255, 196, 0.08);
+}
+
+.panel--wide {
+  margin-top: 18px;
+}
+
+.feature-list {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .floating-state {
   position: fixed;
   right: 20px;
@@ -351,6 +499,7 @@ input {
 
 @media (max-width: 1120px) {
   .hero,
+  .premium-grid,
   .metrics-grid,
   .radar-layout,
   .analytics-grid {
@@ -381,6 +530,14 @@ input {
   .panel__header {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .inline-form,
+  .saved-list__item,
+  .traffic-table__head,
+  .traffic-table__row,
+  .feature-list {
+    grid-template-columns: 1fr;
   }
 
   .search-box input {
