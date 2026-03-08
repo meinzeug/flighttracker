@@ -1,0 +1,42 @@
+{
+  "name": "flighttracker",
+  "version": "1.0.0",
+  "description": "Live-Flugradar mit OpenSky, Typanalyse und Emissionsschaetzung",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n server,client -c yellow,cyan \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "node --watch server/index.js",
+    "dev:client": "vite --host 0.0.0.0 --port 6666",
+    "build": "vite build",
+    "preview": "vite preview --host 0.0.0.0 --port 6666",
+    "start": "node server/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/meinzeug/flighttracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/meinzeug/flighttracker/issues"
+  },
+  "homepage": "https://github.com/meinzeug/flighttracker#readme",
+  "dependencies": {
+    "@deck.gl/core": "^9.2.11",
+    "@deck.gl/layers": "^9.2.11",
+    "@deck.gl/mapbox": "^9.2.11",
+    "better-sqlite3": "^12.6.2",
+    "csv-parse": "^6.1.0",
+    "express": "^5.2.1",
+    "maplibre-gl": "^5.19.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.2.1",
+    "vite": "^6.1.0"
+  }
+}
