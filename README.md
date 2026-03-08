@@ -1,36 +1,39 @@
 # FlightTracker
 
-Live-Flugradar mit OpenSky, Typanalyse und einer transparenten Emissionsschaetzung fuer die aktuell sichtbare weltweite Flugflotte.
+Geschuetztes, mobiles Live-Radar fuer globale Fluglagen mit Typanalyse, Emissionsschaetzung, Watchlists, Playback und optionaler PayPal-Monetarisierung.
 
-## Was das Projekt macht
+## Produktbild
 
-- zeigt live die aktuell in der Luft erfassten Flugzeuge
-- bietet ein serverseitig gepuffertes Global-Playback fuer die letzten Snapshots
-- speichert Filteransichten lokal als wiederverwendbare Views
-- unterstuetzt Watchlist-Alerts fuer Callsigns, Registrierungen, ICAO24 und Typen
-- gruppiert nach Betriebssegmenten wie `Passenger`, `Cargo`, `Military / Government`, `Business / Private`, `Rotorcraft` und weiteren Klassen
-- schaetzt pro Flugzeug und fuer die Gesamtflotte den momentanen Kerosinverbrauch sowie den direkten `CO2`-Ausstoss
-- bietet ein Browser-Frontend mit Radar-Look, interaktiver Weltkarte und Filterleisten
-- laeuft lokal mit `npm run dev` auf Port `3000`
+FlightTracker ist kein statisches Dashboard mehr, sondern ein lokales Radarprodukt:
+
+- mobile-first Frontend mit grosser Live-Karte und taktischem Sidepanel
+- Login-Gate vor der Live-API
+- Admin-Bootstrap direkt ueber die Weboberflaeche beim ersten Start
+- Live-Fluglage mit Radar-Scope, Zielauswahl und Watchlist-Alerts
+- Typ-, Segment- und Emissionsanalyse auf Basis der aktuellen OpenSky-Daten
+- Saved Views und serverseitig gepufferter Playback-Verlauf
+- optionaler PayPal-Checkout fuer einen direkten Support- oder Command-Pass-Verkauf
+- PM2- und Kiosk-Basis fuer lokale Desktop- oder USB-Deployments
 
 ## Stack
 
 - Frontend: `React` + `Vite`
-- Karten-/Radar-Layer: `MapLibre GL JS` + `deck.gl`
+- Kartenbasis: `MapLibre GL JS`
+- Flugdarstellung: eigene Canvas-Radar-Ebene
 - Backend: `Express`
 - Live-Daten: OpenSky `states/all?extended=1`
-- Playback: serverseitige Snapshot-Historie im API-Layer
-- Typ-/Metadaten: OpenSky Aircraft Database + DOC8643 Aircraft Types
-- schneller Typ-Lookup: lokaler `SQLite`-Index, einmalig aus der OpenSky-CSV aufgebaut
+- Typ-/Metadaten: OpenSky Aircraft Database + DOC8643
+- Lookup: lokaler `SQLite`-Index
+- Prozessmanagement: `PM2`
 
 ## Schnellstart
 
 ### Voraussetzungen
 
 - `Node.js 20+`
-- `Python 3.11+` mit eingebautem `sqlite3`
+- `Python 3.11+` mit `sqlite3`
 
-### Starten
+### Installation
 
 ```bash
 npm install
@@ -41,6 +44,17 @@ Danach:
 
 - Frontend: `http://localhost:3000`
 - API: `http://localhost:3001`
+
+## Erster Login
+
+Beim ersten Start gibt es noch keinen Admin.
+
+1. `http://localhost:3000` oeffnen
+2. Benutzername und Passwort setzen
+3. der erste Login legt den lokalen Admin-Zugang an
+4. danach ist die Live-API nur noch mit Session erreichbar
+
+Die Session wird als `HttpOnly`-Cookie gesetzt.
 
 ## Wichtige Scripts
 
@@ -54,13 +68,12 @@ npm run pm2:restart
 npm run pm2:stop
 npm run pm2:delete
 npm run pm2:status
-pm2 logs
 python3 current_aircraft_count.py --raw
 ```
 
 ## PM2
 
-Der lokale Entwicklungsstack ist direkt mit PM2 managebar.
+Der lokale Stack ist direkt mit PM2 managebar:
 
 ```bash
 npm run pm2:start
@@ -70,50 +83,77 @@ npm run pm2:stop
 npm run pm2:delete
 ```
 
-Gestartet werden zwei Prozesse:
+Prozesse:
 
 - `flighttracker-web` auf `http://localhost:3000`
 - `flighttracker-api` auf `http://localhost:3001`
 
-Die Konfiguration liegt in `ecosystem.config.cjs`.
+## PayPal Monetarisierung
 
-## Umgebungsvariablen
+Die App kann eine echte PayPal-Checkout-Flaeche rendern, wenn der Server konfiguriert ist.
+
+### Noetige Variablen
+
+```bash
+PAYPAL_ENV=sandbox
+PAYPAL_CLIENT_ID=deine_paypal_client_id
+PAYPAL_CLIENT_SECRET=dein_paypal_client_secret
+PAYPAL_CURRENCY=EUR
+PAYPAL_SUPPORT_AMOUNT=29.00
+```
+
+Ohne diese Werte bleibt der Support-/Checkout-Block sichtbar, aber deaktiviert.
+
+Die Integration nutzt die aktuelle PayPal-JavaScript-SDK plus serverseitige Orders-v2-Erstellung und Capture-Endpunkte.
+
+## Weitere Umgebungsvariablen
 
 ```bash
 OPENSKY_TOKEN=dein_token
 CLIENT_PORT=3000
 SERVER_PORT=3001
 LIVE_CACHE_TTL_MS=30000
+SESSION_TTL_MS=604800000
 AIRCRAFT_DB_URL=https://s3.opensky-network.org/data-samples/metadata/aircraft-database-complete-2024-10.csv
 DOC8643_URL=https://s3.opensky-network.org/data-samples/metadata/doc8643AircraftTypes.csv
 ```
 
+## Kiosk / USB Richtung
+
+Unter `deploy/kiosk/` liegt eine lokale Startbasis:
+
+- `start-flighttracker.sh`
+- `flighttracker-kiosk.desktop`
+- `deploy/kiosk/README.md`
+
+Damit laesst sich das Produkt auf einem Linux-Desktop oder Live-System leicht als lokale Kiosk-App starten.
+
 ## Datenfluss
 
 1. Der Server zieht Live-State-Vektoren von OpenSky.
-2. Er filtert auf Flugzeuge in der Luft (`on_ground = false`).
-3. Fuer unbekannte `icao24`-Kennungen werden Typ- und Betreiberinfos aus einem lokalen SQLite-Lookup gelesen.
-4. Die App klassifiziert jedes Flugzeug heuristisch in ein Betriebssegment.
-5. Ein Schaetzmodell berechnet daraus `fuel kg/h`, `fuel L/h` und `CO2 kg/h`.
-6. Das Frontend visualisiert die Flotte als Radar-Karte, Scope, Playback, Saved Views, Alerts und Analyse-Dashboard.
+2. Er filtert auf Flugzeuge in der Luft.
+3. Der Lookup reichert Typ- und Betreiberinfos an.
+4. Die App klassifiziert Flugzeuge in Segmente wie `Cargo`, `Passenger`, `Military / Government` oder `Business / Private`.
+5. Das Emissionsmodell schaetzt `fuel L/h` und `CO2 kg/h`.
+6. Das Frontend rendert Radar, Scope, Playback, Filter, Alerts und Checkout.
 
 ## Fachliche Hinweise
 
-Diese App ist bewusst eine Live-Schaetzung und kein zertifiziertes Emissionsinventar.
+Die angezeigten Verbrauchs- und Emissionswerte sind heuristische Live-Schaetzungen.
 
-- OpenSky deckt nicht jedes einzelne Flugzeug weltweit perfekt ab.
-- Die Typauflosung ist so gut wie die verknuepfte OpenSky Aircraft Database.
-- `Fuel` und `CO2` werden heuristisch aus Typcode, Motorart, Anzahl Triebwerke, Wake-Klasse, Geschwindigkeit, Hoehe und Betriebssegment abgeleitet.
-- `CO2` basiert auf der Faustformel `3.16 kg CO2 pro kg verbranntem Kerosin`.
+- OpenSky erfasst nicht jedes Flugzeug weltweit perfekt.
+- Die Typauflosung haengt von den verknuepften Metadaten ab.
+- `CO2` basiert auf `3.16 kg CO2` pro `kg` verbranntem Kerosin.
 - Literwerte werden mit rund `0.8 kg/L` umgerechnet.
 
 ## Repo-Struktur
 
 ```text
-server/          Express API, Live-Daten, Klassifikation, Emissionsmodell
-src/             React-Frontend, Radar-Karte, Radar-Scope, Dashboard
-scripts/         Hilfsskripte, z.B. Aufbau des SQLite-Lookups
-data/cache/      lokal erzeugte Metadaten-Caches (gitignored)
+server/          Express API, Auth, Live-Daten, Emissionsmodell, PayPal
+src/             React-Frontend, Radar-Karte, Scope, Produkt-UI
+deploy/kiosk/    lokale Kiosk-/Desktop-Startbasis
+scripts/         Hilfsskripte
+data/cache/      lokal erzeugte Metadaten-Caches
 current_aircraft_count.py
 ```
 
@@ -123,8 +163,5 @@ current_aircraft_count.py
 - OpenSky REST-Doku: `https://openskynetwork.github.io/opensky-api/rest.html`
 - OpenSky Metadata Bucket: `https://s3.opensky-network.org/data-samples/metadata/`
 - MapLibre GL JS: `https://maplibre.org/maplibre-gl-js/docs/`
-- deck.gl: `https://deck.gl/docs`
-
-## Status
-
-Das Projekt ist auf lokale Exploration, Visualisierung und Monitoring ausgelegt. Fuer belastbare Klima- oder Compliance-Berichte sollten die heuristischen Werte nicht ungeprueft uebernommen werden.
+- PayPal JavaScript SDK: `https://developer.paypal.com/sdk/js/`
+- PayPal Orders v2 API: `https://developer.paypal.com/docs/api/orders/v2/`

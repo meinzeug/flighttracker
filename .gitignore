@@ -2,5 +2,6 @@ node_modules/
 dist/
 tmp/
 data/cache/
+data/runtime/
 *.log
 .DS_Store
