@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=WhatsUpp Kiosk
+Comment=Startet WhatsUpp lokal im Desktop-Kiosk
+Exec=/bin/bash -lc 'cd /home/dennis/whatsupp && ./deploy/kiosk/start-whatsupp.sh'
+Terminal=false
+Categories=Network;Monitor;

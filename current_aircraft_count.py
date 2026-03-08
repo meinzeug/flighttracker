@@ -18,7 +18,7 @@ API_URL = "https://opensky-network.org/api/states/all"
 def fetch_states(timeout: float, token: str | None = None) -> dict[str, Any]:
     headers = {
         "Accept": "application/json",
-        "User-Agent": "flighttracker/1.0 (+https://opensky-network.org)",
+        "User-Agent": "whatsupp/1.0 (+https://opensky-network.org)",
     }
     if token:
         headers["Authorization"] = f"Bearer {token}"

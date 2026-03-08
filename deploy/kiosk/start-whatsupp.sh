@@ -16,4 +16,4 @@ fi
 
 npx pm2 start ecosystem.config.cjs >/dev/null 2>&1 || npx pm2 restart ecosystem.config.cjs >/dev/null 2>&1
 sleep 3
-xdg-open http://localhost:3000 >/dev/null 2>&1 &
+xdg-open http://localhost:23666 >/dev/null 2>&1 &

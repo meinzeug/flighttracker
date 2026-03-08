@@ -84,16 +84,16 @@ export async function createSupportOrder({ username }) {
       intent: 'CAPTURE',
       purchase_units: [
         {
-          description: 'FlightTracker Command Pass',
+          description: 'WhatsUpp Command Pass',
           amount: {
             currency_code: PAYPAL_CURRENCY,
             value: PAYPAL_SUPPORT_AMOUNT,
           },
-          custom_id: `flighttracker-${username}`,
+          custom_id: `whatsupp-${username}`,
         },
       ],
       application_context: {
-        brand_name: 'FlightTracker',
+        brand_name: 'WhatsUpp',
         landing_page: 'LOGIN',
         user_action: 'PAY_NOW',
       },

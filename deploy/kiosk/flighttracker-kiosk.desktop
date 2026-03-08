@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=FlightTracker Kiosk
-Comment=Startet FlightTracker lokal im Desktop-Kiosk
-Exec=/bin/bash -lc 'cd /home/dennis/flighttracker && ./deploy/kiosk/start-flighttracker.sh'
-Terminal=false
-Categories=Network;Monitor;

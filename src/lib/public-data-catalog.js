@@ -1,0 +1,160 @@
+export const PUBLIC_DATA_CATALOG = [
+  {
+    category: 'Luftfahrt',
+    items: [
+      {
+        id: 'opensky',
+        label: 'OpenSky Live States',
+        status: 'aktiv',
+        mode: 'live',
+        note: 'Globale ADS-B Fluglage mit OAuth empfohlen.',
+      },
+      {
+        id: 'openaip',
+        label: 'openAIP Luftraeume / Flugplaetze',
+        status: 'mit API-Key',
+        mode: 'reference',
+        note: 'Luftraeume, Flugplaetze, Navaids und weitere VFR-Daten.',
+      },
+    ],
+  },
+  {
+    category: 'Schifffahrt',
+    items: [
+      {
+        id: 'gfw',
+        label: 'Global Fishing Watch',
+        status: 'mit API-Key',
+        mode: 'near-real-time',
+        note: 'AIS-Vessel-Presence, Fishing Effort, Port Visits, SAR detections.',
+      },
+      {
+        id: 'marinecadastre',
+        label: 'NOAA Marine Cadastre AIS',
+        status: 'verzoegert',
+        mode: 'historisch',
+        note: 'US-AIS / Transit Counts / Infrastruktur, kein echter Live-Feed.',
+      },
+      {
+        id: 'openseamap',
+        label: 'OpenSeaMap Seamarks',
+        status: 'sofort',
+        mode: 'map-layer',
+        note: 'Seezeichen, maritime Orientierung und Hafenumfeld.',
+      },
+    ],
+  },
+  {
+    category: 'Energie / Infrastruktur',
+    items: [
+      {
+        id: 'openinframap',
+        label: 'Open Infrastructure Map / OSM',
+        status: 'sofort',
+        mode: 'map-layer',
+        note: 'Stromleitungen, Umspannwerke und weitere OSM-Infrastruktur.',
+      },
+      {
+        id: 'entsoe',
+        label: 'ENTSO-E Transparency API',
+        status: 'mit Token',
+        mode: 'near-real-time',
+        note: 'Stromerzeugung, Last, Interkonnektoren, Outages.',
+      },
+      {
+        id: 'entsog',
+        label: 'ENTSOG Transparency Platform',
+        status: 'mit Token',
+        mode: 'daily',
+        note: 'Gasfluesse, Kapazitaeten, Transmission und Grenzpunkte.',
+      },
+      {
+        id: 'agsi',
+        label: 'GIE AGSI+ / ALSI',
+        status: 'mit API-Key',
+        mode: 'daily',
+        note: 'Gasspeicher-Fuellstand und LNG-Lagerdaten.',
+      },
+      {
+        id: 'eia',
+        label: 'EIA Open Data',
+        status: 'sofort',
+        mode: 'daily-weekly',
+        note: 'US Gas Storage, Strom, Brennstoffe, Preise und Energiefluesse.',
+      },
+      {
+        id: 'osm-pipelines',
+        label: 'OSM / Overpass Pipelines',
+        status: 'sofort',
+        mode: 'map-layer',
+        note: 'Pipelines, Industrie, Terminals und Netz-Topologie.',
+      },
+    ],
+  },
+  {
+    category: 'Wetter / Umwelt / Ereignisse',
+    items: [
+      {
+        id: 'open-meteo',
+        label: 'Open-Meteo',
+        status: 'aktiv',
+        mode: 'live',
+        note: 'Punktwetter am Kartenzentrum.',
+      },
+      {
+        id: 'noaa-weather',
+        label: 'NOAA / NWS API',
+        status: 'sofort',
+        mode: 'live',
+        note: 'Forecasts, Alerts, Beobachtungen und Wasserdaten.',
+      },
+      {
+        id: 'nasa-firms',
+        label: 'NASA FIRMS',
+        status: 'sofort',
+        mode: 'near-real-time',
+        note: 'Brand-Hotspots und Feuerlagen.',
+      },
+      {
+        id: 'usgs',
+        label: 'USGS Earthquake Feeds',
+        status: 'sofort',
+        mode: 'live',
+        note: 'GeoJSON/KML Erdbeben-Feeds.',
+      },
+    ],
+  },
+  {
+    category: 'Karten / Marine / Referenz',
+    items: [
+      {
+        id: 'osm',
+        label: 'OpenStreetMap / Overpass',
+        status: 'sofort',
+        mode: 'reference',
+        note: 'Straßen, POIs, Grenzen und thematische GIS-Abfragen.',
+      },
+      {
+        id: 'opentopomap',
+        label: 'OpenTopoMap',
+        status: 'aktiv',
+        mode: 'basemap',
+        note: 'Topografische Basis fuer Relief und Terrain.',
+      },
+      {
+        id: 'noaa-enc',
+        label: 'NOAA ENC',
+        status: 'sofort',
+        mode: 'reference',
+        note: 'Nautische Karten- und Kuestendaten fuer die USA.',
+      },
+      {
+        id: 'world-port-index',
+        label: 'NGA World Port Index',
+        status: 'sofort',
+        mode: 'reference',
+        note: 'Globale Hafen- und Navigationsreferenzen.',
+      },
+    ],
+  },
+];

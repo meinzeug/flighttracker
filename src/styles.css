@@ -243,6 +243,12 @@ canvas {
   color: #ffb8b8;
 }
 
+.inline-state--warning {
+  color: #ffe3a1;
+  background: rgba(255, 209, 102, 0.1);
+  border: 1px solid rgba(255, 209, 102, 0.18);
+}
+
 .access-footnotes {
   margin-top: 6px;
 }
@@ -674,5 +680,1855 @@ canvas {
 
   .radar-scope {
     height: 420px;
+  }
+}
+
+.app-shell--tracker {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  padding: 12px;
+  gap: 12px;
+  background:
+    radial-gradient(circle at top left, rgba(65, 119, 255, 0.08), transparent 24%),
+    radial-gradient(circle at bottom right, rgba(255, 176, 66, 0.08), transparent 22%);
+}
+
+.tracker-topbar,
+.tracker-layout,
+.tracker-bottom,
+.summary-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.tracker-topbar,
+.tracker-layout,
+.tracker-bottom {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.tracker-sidebar,
+.tracker-detail,
+.tracker-stage {
+  min-width: 0;
+  display: grid;
+  gap: 12px;
+}
+
+.tracker-brand,
+.tracker-searchbar,
+.tracker-session,
+.panel--sidebar-overview,
+.panel--traffic,
+.panel--selected,
+.panel--route-monitor,
+.panel--scope,
+.panel--watchlist,
+.panel--filters,
+.panel--list,
+.panel--map-stage-radar {
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(18, 24, 34, 0.96), rgba(11, 15, 23, 0.96)),
+    rgba(11, 15, 23, 0.96);
+  border: 1px solid rgba(140, 157, 183, 0.18);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.34);
+  backdrop-filter: blur(16px);
+}
+
+.tracker-brand,
+.tracker-session {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.tracker-brand__mark {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ffc247, #ff8a36);
+  color: #15161c;
+  font: 700 1.25rem 'IBM Plex Mono', monospace;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+}
+
+.tracker-brand__copy,
+.tracker-session__meta,
+.stage-topbar__title,
+.selected-head__copy {
+  display: grid;
+  gap: 4px;
+}
+
+.tracker-brand__copy strong,
+.tracker-session__meta strong {
+  font-size: 1.1rem;
+}
+
+.tracker-brand__copy > span:last-child,
+.tracker-session__subline,
+.selected-head__copy p,
+.panel-copy {
+  color: rgba(212, 220, 232, 0.72);
+}
+
+.tracker-searchbar {
+  display: grid;
+  gap: 12px;
+}
+
+.tracker-toolbar,
+.tracker-toolbar__actions,
+.flight-deck__header-actions,
+.route-monitor__status,
+.route-point__head,
+.route-point__stats,
+.flight-row__stats,
+.flight-row__metrics {
+  display: flex;
+  gap: 8px;
+}
+
+.tracker-toolbar,
+.panel__header--route {
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.tracker-toolbar__actions,
+.flight-deck__header-actions,
+.route-monitor__status,
+.route-point__stats,
+.flight-row__stats {
+  flex-wrap: wrap;
+}
+
+.tracker-toolbar__hint {
+  color: rgba(212, 220, 232, 0.64);
+  font: 500 0.78rem 'IBM Plex Mono', monospace;
+}
+
+.tracker-searchbar__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.tracker-searchbar input {
+  min-height: 48px;
+  border-radius: 12px;
+  border: 1px solid rgba(163, 178, 204, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+  padding: 0 14px;
+}
+
+.tracker-session {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.tracker-warning {
+  border-radius: 16px;
+}
+
+.status-ribbon {
+  gap: 8px;
+}
+
+.status-pill,
+.live-pill,
+.status-tag,
+.legend-chip {
+  border-radius: 11px;
+  border-color: rgba(157, 176, 206, 0.16);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.live-pill.is-live {
+  background: rgba(82, 182, 255, 0.12);
+  color: #a8ddff;
+}
+
+.live-pill.is-stale {
+  background: rgba(255, 194, 71, 0.12);
+  color: #ffd991;
+}
+
+.summary-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-grid--stage {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.summary-grid--route {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-tile {
+  min-height: 92px;
+  padding: 12px 14px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(163, 178, 204, 0.12);
+  display: grid;
+  gap: 6px;
+  align-content: space-between;
+}
+
+.summary-tile__label,
+.summary-tile__detail {
+  font: 500 0.76rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.summary-tile__label {
+  color: rgba(214, 223, 235, 0.64);
+}
+
+.summary-tile__value {
+  font-size: clamp(1.1rem, 2vw, 1.55rem);
+  line-height: 1.05;
+}
+
+.summary-tile__detail {
+  color: rgba(214, 223, 235, 0.56);
+}
+
+.summary-tile--amber {
+  box-shadow: inset 0 0 0 1px rgba(255, 194, 71, 0.12);
+}
+
+.summary-tile--red {
+  box-shadow: inset 0 0 0 1px rgba(255, 120, 111, 0.12);
+}
+
+.summary-tile--blue {
+  box-shadow: inset 0 0 0 1px rgba(98, 185, 255, 0.14);
+}
+
+.tracker-layout {
+  align-items: start;
+}
+
+.panel--traffic,
+.panel--watchlist,
+.panel--filters,
+.panel--list,
+.panel--scope,
+.panel--selected,
+.panel--route-monitor,
+.panel--sidebar-overview {
+  padding: 14px;
+}
+
+.panel--map-stage-radar {
+  padding: 12px;
+}
+
+.stage-topbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.stage-topbar__title h2 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.stage-topbar__title span,
+.panel__header span {
+  color: rgba(212, 220, 232, 0.68);
+}
+
+.stage-badges {
+  gap: 8px;
+}
+
+.tracker-stage .radar-map-shell {
+  border-radius: 16px;
+  border: 1px solid rgba(157, 176, 206, 0.12);
+  background: #0c1522;
+}
+
+.radar-fallback,
+.radar-scope--fallback {
+  display: grid;
+  place-items: center;
+  color: rgba(212, 220, 232, 0.72);
+  border-radius: 16px;
+  border: 1px dashed rgba(157, 176, 206, 0.16);
+  background: rgba(8, 13, 20, 0.82);
+  font: 500 0.9rem 'IBM Plex Mono', monospace;
+}
+
+.tracker-stage .radar-map {
+  height: clamp(480px, 68vh, 900px);
+}
+
+.radar-fallback {
+  min-height: clamp(480px, 68vh, 900px);
+}
+
+.tracker-stage .radar-map__mask {
+  background:
+    radial-gradient(circle at center, transparent 56%, rgba(2, 5, 10, 0.16) 100%),
+    linear-gradient(180deg, rgba(3, 8, 14, 0.02), rgba(3, 8, 14, 0.16));
+}
+
+.map-footer--dense {
+  margin-top: 10px;
+  gap: 12px;
+}
+
+.chip-list {
+  gap: 8px;
+}
+
+.selected-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.selected-head__copy h3 {
+  margin: 0;
+  font-size: 1.45rem;
+}
+
+.selected-head__copy p {
+  margin: 0;
+}
+
+.selected-head__codes {
+  display: grid;
+  gap: 8px;
+  justify-items: end;
+  align-content: start;
+}
+
+.selected-kicker {
+  font: 600 0.72rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #ffc247;
+}
+
+.selected-grid,
+.selected-meta-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.selected-grid {
+  margin-bottom: 10px;
+}
+
+.selected-grid > div,
+.selected-meta-grid > div {
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(157, 176, 206, 0.1);
+  display: grid;
+  gap: 4px;
+}
+
+.selected-grid strong,
+.selected-meta-grid strong {
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.segmented-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid rgba(157, 176, 206, 0.12);
+}
+
+.segmented-control__button {
+  min-height: 30px;
+  padding: 0 12px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  background: transparent;
+  color: rgba(226, 234, 243, 0.78);
+  cursor: pointer;
+  font: 600 0.76rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  transition: background 140ms ease, color 140ms ease, transform 140ms ease;
+}
+
+.segmented-control__button:hover {
+  transform: translateY(-1px);
+}
+
+.segmented-control__button.is-active,
+.mini-button.is-active,
+.status-pill--active {
+  background: rgba(255, 194, 71, 0.14);
+  color: #ffe3a5;
+  border-color: rgba(255, 194, 71, 0.3);
+}
+
+.action-button:disabled,
+.ghost-button:disabled,
+.mini-button:disabled,
+.segmented-control__button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.radar-scope {
+  height: 240px;
+  border-radius: 16px;
+  border-color: rgba(157, 176, 206, 0.14);
+}
+
+.radar-scope--fallback {
+  height: 240px;
+}
+
+.flight-deck--traffic {
+  gap: 8px;
+  max-height: min(68vh, 980px);
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.flight-row,
+.list-row,
+.alert-item {
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(157, 176, 206, 0.1);
+}
+
+.flight-row {
+  padding: 10px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+}
+
+.flight-row.is-active {
+  border-color: rgba(255, 194, 71, 0.4);
+  background: rgba(255, 194, 71, 0.07);
+}
+
+.flight-row__line {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: start;
+}
+
+.flight-row__index {
+  min-width: 28px;
+  padding-top: 2px;
+  color: rgba(212, 220, 232, 0.48);
+  font: 500 0.76rem 'IBM Plex Mono', monospace;
+}
+
+.flight-row__title strong,
+.list-row strong,
+.alert-item strong {
+  font-size: 0.95rem;
+}
+
+.flight-row__meta {
+  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flight-row__stats,
+.flight-row__metrics {
+  align-items: center;
+}
+
+.flight-row__metrics {
+  justify-content: space-between;
+}
+
+.flight-stat {
+  padding: 4px 8px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(157, 176, 206, 0.1);
+  font: 500 0.74rem 'IBM Plex Mono', monospace;
+}
+
+.route-monitor__timeline {
+  display: grid;
+  gap: 8px;
+  max-height: 320px;
+  overflow: auto;
+}
+
+.route-point {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(157, 176, 206, 0.1);
+}
+
+.route-point__head {
+  justify-content: space-between;
+  align-items: center;
+}
+
+.route-point__head span,
+.route-point__coords {
+  color: rgba(212, 220, 232, 0.68);
+}
+
+.route-point__stats {
+  color: rgba(239, 255, 245, 0.92);
+  font: 500 0.76rem 'IBM Plex Mono', monospace;
+}
+
+.route-point--empty {
+  color: rgba(212, 220, 232, 0.6);
+}
+
+.flight-row__meta span,
+.flight-row__title span,
+.list-row span,
+.alert-item span,
+.alert-item small {
+  color: rgba(212, 220, 232, 0.68);
+}
+
+.flight-row__action {
+  align-self: center;
+}
+
+.list-grid,
+.alert-feed {
+  gap: 8px;
+}
+
+.list-row {
+  padding: 12px;
+}
+
+.list-row--empty,
+.alert-item--empty {
+  color: rgba(212, 220, 232, 0.6);
+}
+
+.alert-item {
+  display: grid;
+  gap: 4px;
+  padding: 12px;
+}
+
+.panel--filters .chip-list {
+  gap: 8px;
+}
+
+.chip {
+  min-height: 34px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.035);
+}
+
+.floating-state {
+  right: 12px;
+  bottom: 12px;
+  border-radius: 12px;
+  background: rgba(12, 17, 25, 0.96);
+  border-color: rgba(157, 176, 206, 0.18);
+}
+
+@media (min-width: 900px) {
+  .app-shell--tracker {
+    padding: 14px;
+  }
+
+  .tracker-topbar {
+    grid-template-columns: minmax(260px, 360px) minmax(0, 1fr) minmax(220px, 280px);
+    align-items: stretch;
+  }
+
+  .tracker-bottom {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1180px) {
+  .tracker-layout {
+    grid-template-columns: minmax(300px, 360px) minmax(0, 1fr) minmax(320px, 380px);
+  }
+
+  .tracker-stage .radar-map {
+    height: clamp(620px, 74vh, 940px);
+  }
+
+  .radar-scope {
+    height: 260px;
+  }
+}
+
+@media (max-width: 899px) {
+  .tracker-brand,
+  .tracker-session,
+  .tracker-searchbar__row,
+  .tracker-toolbar,
+  .selected-head,
+  .stage-topbar {
+    grid-template-columns: minmax(0, 1fr);
+    display: grid;
+  }
+
+  .summary-grid,
+  .summary-grid--stage,
+  .summary-grid--route,
+  .selected-grid,
+  .selected-meta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .tracker-stage .radar-map {
+    height: clamp(380px, 52vh, 560px);
+  }
+
+  .flight-deck--traffic {
+    max-height: 420px;
+  }
+}
+
+@media (max-width: 640px) {
+  .app-shell--tracker {
+    padding: 10px;
+  }
+
+  .summary-grid,
+  .summary-grid--stage,
+  .summary-grid--route,
+  .selected-grid,
+  .selected-meta-grid,
+  .tracker-searchbar__row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .tracker-stage .radar-map {
+    height: 46vh;
+    min-height: 340px;
+  }
+}
+
+.app-shell--radar-console {
+  width: 100%;
+  max-width: none;
+  min-height: 100vh;
+  padding: 0;
+  display: block;
+  background: #5d8ea3;
+}
+
+.app-shell--radar-console .floating-state {
+  z-index: 80;
+}
+
+.radar-console {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgba(20, 34, 40, 0.18), rgba(20, 34, 40, 0.08)),
+    #6094a9;
+}
+
+.app-shell--radar-console .radar-map-shell {
+  position: absolute;
+  inset: 0;
+  border-radius: 0;
+  border: 0;
+  background: #6094a9;
+}
+
+.app-shell--radar-console .radar-map {
+  height: 100vh;
+  min-height: 100vh;
+  max-height: none;
+}
+
+.app-shell--radar-console .radar-map__mask {
+  background:
+    linear-gradient(90deg, rgba(27, 38, 44, 0.26), transparent 18%, transparent 82%, rgba(27, 38, 44, 0.18)),
+    linear-gradient(180deg, rgba(10, 17, 20, 0.1), rgba(10, 17, 20, 0.1));
+}
+
+.app-shell--radar-console .map-tooltip {
+  border-radius: 12px;
+  background: rgba(46, 46, 46, 0.94);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+}
+
+.radar-overlay,
+.radar-pane {
+  position: absolute;
+  z-index: 20;
+}
+
+.radar-overlay--brand {
+  top: 16px;
+  left: 18px;
+}
+
+.radar-brand-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 14px;
+  border-radius: 999px;
+  background: rgba(50, 53, 56, 0.86);
+  color: #f5c629;
+  font: 700 0.72rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.radar-overlay--topright {
+  top: 112px;
+  right: 344px;
+}
+
+.radar-overlay--command {
+  top: 16px;
+  left: 318px;
+  right: 344px;
+}
+
+.radar-view-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-radius: 999px;
+  background: rgba(50, 53, 56, 0.88);
+  color: #e8eaed;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+}
+
+.radar-view-switch strong {
+  color: #f5c629;
+  font-size: 1.1rem;
+}
+
+.radar-overlay--warning {
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.radar-warning-banner {
+  max-width: min(80vw, 720px);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: rgba(49, 41, 18, 0.94);
+  color: #ffd56f;
+  border: 1px solid rgba(245, 198, 41, 0.26);
+}
+
+.radar-pane--left {
+  top: 16px;
+  left: 10px;
+  bottom: 86px;
+  width: 296px;
+  display: grid;
+  grid-template-rows: minmax(240px, auto) minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.radar-pane--right {
+  top: 16px;
+  right: 10px;
+  bottom: 86px;
+  width: 320px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+}
+
+.radar-card {
+  border-radius: 14px;
+  background: rgba(47, 47, 47, 0.88);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  box-shadow: 0 16px 42px rgba(0, 0, 0, 0.28);
+  backdrop-filter: blur(12px);
+  color: #f0f0f0;
+}
+
+.radar-card--traffic-list,
+.radar-card--disruptions,
+.radar-card--bookmarks,
+.radar-card--selected-overlay,
+.radar-card--info,
+.radar-card--scope-overlay {
+  padding: 10px;
+}
+
+.radar-command-bar {
+  padding: 12px 14px;
+}
+
+.radar-command-bar__main,
+.radar-command-bar__meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.radar-command-bar__main {
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.radar-command-bar__meta {
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.radar-command-bar__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.radar-search-field {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 6px;
+}
+
+.radar-search-field span {
+  color: rgba(232, 236, 240, 0.68);
+  font: 600 0.74rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.radar-search-field input {
+  width: 100%;
+  min-height: 46px;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(18, 18, 18, 0.58);
+  color: #f4f6f8;
+  padding: 0 14px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.radar-command-bar .radar-chip {
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(244, 246, 248, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radar-card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.radar-card__header h2,
+.radar-card__header h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #f3f5f7;
+}
+
+.radar-card__header span {
+  color: rgba(232, 236, 240, 0.68);
+  font: 500 0.75rem 'IBM Plex Mono', monospace;
+}
+
+.radar-chip,
+.radar-live-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 0 10px;
+  border-radius: 999px;
+  font: 700 0.7rem 'IBM Plex Mono', monospace;
+  letter-spacing: 0.04em;
+}
+
+.radar-chip--button {
+  background: rgba(72, 72, 72, 0.9);
+  color: #f4f4f4;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.radar-chip--button.is-active {
+  color: #f5c629;
+  border-color: rgba(245, 198, 41, 0.25);
+}
+
+.radar-live-tag {
+  background: rgba(245, 198, 41, 0.14);
+  color: #f5c629;
+  border: 1px solid rgba(245, 198, 41, 0.22);
+}
+
+.radar-flight-scroll {
+  display: grid;
+  gap: 6px;
+  max-height: calc(100vh - 190px);
+  overflow: auto;
+  padding-right: 2px;
+}
+
+.radar-flight-card {
+  width: 100%;
+  display: grid;
+  gap: 6px;
+  padding: 12px 12px 10px;
+  text-align: left;
+  border-radius: 12px;
+  background: rgba(90, 90, 90, 0.7);
+  color: #f2f3f5;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-flight-card.is-active {
+  border-color: rgba(245, 198, 41, 0.3);
+  box-shadow: inset 0 0 0 1px rgba(245, 198, 41, 0.12);
+}
+
+.radar-flight-card__head,
+.radar-flight-card__body,
+.radar-selected-actions,
+.radar-selected-footer,
+.radar-session-actions,
+.radar-bookmark-input,
+.radar-info-list > div {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radar-flight-card__head strong,
+.radar-selected-title strong {
+  font-size: 1.18rem;
+  line-height: 1;
+}
+
+.radar-flight-card__rank {
+  color: rgba(236, 239, 242, 0.82);
+}
+
+.radar-flight-card__badge {
+  padding: 2px 6px;
+  border-radius: 6px;
+  background: rgba(92, 145, 189, 0.94);
+  color: #f0f6fb;
+  font: 700 0.72rem 'IBM Plex Mono', monospace;
+}
+
+.radar-flight-card__body {
+  justify-content: space-between;
+  color: rgba(236, 239, 242, 0.8);
+}
+
+.radar-flight-card__body strong {
+  color: #f5c629;
+  font-size: 1.45rem;
+  line-height: 1;
+}
+
+.radar-disruption-body {
+  min-height: 290px;
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 10px 0 0;
+  color: rgba(236, 239, 242, 0.8);
+}
+
+.radar-disruption-list,
+.radar-bookmark-list {
+  display: grid;
+  gap: 6px;
+}
+
+.radar-disruption-row,
+.radar-bookmark {
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f2f3f5;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-disruption-row {
+  display: grid;
+  gap: 4px;
+}
+
+.radar-footer-link {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 8px;
+  border-radius: 10px;
+  background: rgba(59, 59, 59, 0.85);
+  color: #75c0ff;
+}
+
+.radar-bookmark-input input {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(19, 19, 19, 0.52);
+  color: #f1f4f6;
+  padding: 0 12px;
+}
+
+.radar-bookmark {
+  text-align: left;
+}
+
+.radar-muted {
+  color: rgba(236, 239, 242, 0.62);
+}
+
+.radar-selected-title {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 10px;
+}
+
+.radar-selected-media {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.radar-selected-media img,
+.radar-selected-media__placeholder {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radar-selected-media img {
+  object-fit: cover;
+  display: block;
+}
+
+.radar-selected-media__placeholder {
+  display: grid;
+  place-items: center;
+  color: rgba(236, 239, 242, 0.68);
+  font: 600 0.9rem 'IBM Plex Mono', monospace;
+}
+
+.radar-selected-media__copy {
+  display: grid;
+  gap: 4px;
+}
+
+.radar-selected-media__copy strong {
+  font-size: 1rem;
+}
+
+.radar-selected-media__copy span {
+  color: rgba(236, 239, 242, 0.74);
+}
+
+.radar-selected-media__copy a {
+  width: fit-content;
+  color: #f5c629;
+  text-decoration: none;
+}
+
+.radar-selected-title span {
+  color: rgba(236, 239, 242, 0.7);
+}
+
+.radar-selected-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.radar-selected-grid > div {
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  display: grid;
+  gap: 2px;
+}
+
+.radar-selected-grid span {
+  color: rgba(236, 239, 242, 0.62);
+  font: 500 0.7rem 'IBM Plex Mono', monospace;
+}
+
+.radar-selected-grid strong {
+  font-size: 1rem;
+}
+
+.radar-selected-actions {
+  justify-content: flex-start;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.radar-selected-footer,
+.radar-info-list > div {
+  justify-content: space-between;
+}
+
+.radar-selected-footer {
+  margin-top: 10px;
+  color: rgba(236, 239, 242, 0.72);
+  font: 500 0.76rem 'IBM Plex Mono', monospace;
+}
+
+.radar-info-list {
+  display: grid;
+  gap: 8px;
+}
+
+.radar-info-list strong {
+  color: #f5c629;
+  font-size: 1.02rem;
+  font-weight: 700;
+}
+
+.radar-info-list span {
+  color: rgba(236, 239, 242, 0.78);
+}
+
+.radar-session-actions {
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.radar-filter-group {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.radar-filter-group strong {
+  color: rgba(244, 246, 248, 0.9);
+  font-size: 0.94rem;
+}
+
+.radar-filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radar-filter-chip {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: rgba(244, 246, 248, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radar-filter-chip small {
+  color: rgba(244, 246, 248, 0.62);
+  font: 600 0.7rem 'IBM Plex Mono', monospace;
+}
+
+.radar-filter-chip.is-active {
+  color: #1f1f1f;
+  background: #f5c629;
+  border-color: rgba(245, 198, 41, 0.9);
+}
+
+.radar-filter-chip.is-active small {
+  color: rgba(31, 31, 31, 0.7);
+}
+
+.radar-overlay--tools {
+  top: 176px;
+  right: 18px;
+  display: grid;
+  gap: 10px;
+}
+
+.radar-round-button {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(52, 52, 52, 0.9);
+  color: #f3f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+  font: 700 0.75rem 'IBM Plex Mono', monospace;
+}
+
+.radar-round-button.is-active {
+  color: #f5c629;
+}
+
+.radar-dock {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  z-index: 30;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 60px;
+  padding: 10px 18px;
+  border-radius: 22px;
+  background: rgba(56, 56, 56, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 18px 44px rgba(0, 0, 0, 0.34);
+}
+
+.radar-dock__button {
+  min-width: 84px;
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 14px;
+  background: transparent;
+  color: rgba(244, 246, 248, 0.82);
+}
+
+.radar-dock__button.is-active {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f2f5f7;
+}
+
+.radar-hidden-search {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-shell--radar-console .maplibregl-ctrl-top-right {
+  top: 336px;
+  right: 18px;
+}
+
+.app-shell--radar-console .radar-map__canvas {
+  pointer-events: none;
+}
+
+.app-shell--radar-console .maplibregl-ctrl-bottom-right {
+  display: none;
+}
+
+.app-shell--radar-console .maplibregl-ctrl-group {
+  border-radius: 18px !important;
+  background: rgba(52, 52, 52, 0.9) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+  box-shadow: 0 12px 34px rgba(0, 0, 0, 0.24);
+}
+
+.app-shell--radar-console .maplibregl-ctrl-group button {
+  width: 44px;
+  height: 44px;
+}
+
+.radar-chip:disabled,
+.radar-chip--button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.app-shell--radar-console .maplibregl-ctrl-icon {
+  filter: invert(96%) sepia(0%) saturate(26%) hue-rotate(156deg) brightness(98%) contrast(91%);
+}
+
+@media (max-width: 1180px) {
+  .radar-pane--left {
+    width: 272px;
+  }
+
+  .radar-pane--right {
+    width: 292px;
+  }
+
+  .radar-overlay--topright {
+    right: 314px;
+  }
+
+  .radar-overlay--command {
+    right: 314px;
+  }
+}
+
+@media (max-width: 980px) {
+  .radar-pane--right,
+  .radar-overlay--topright,
+  .radar-overlay--tools {
+    display: none;
+  }
+
+  .radar-pane--left {
+    width: 280px;
+  }
+
+  .radar-overlay--command {
+    left: 304px;
+    right: 16px;
+  }
+
+  .radar-dock {
+    width: calc(100% - 24px);
+    justify-content: space-between;
+    overflow: auto;
+  }
+}
+
+@media (max-width: 720px) {
+  .radar-pane--left {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    bottom: 92px;
+    grid-template-rows: auto auto auto;
+  }
+
+  .radar-flight-scroll,
+  .radar-disruption-body {
+    max-height: none;
+    min-height: 0;
+  }
+
+  .radar-overlay--brand {
+    display: none;
+  }
+
+  .radar-overlay--command {
+    top: 12px;
+    left: 12px;
+    right: 12px;
+  }
+
+  .radar-dock__button {
+    min-width: 72px;
+  }
+}
+
+.app-shell--radar-console {
+  background: #6c8f78;
+}
+
+.radar-console {
+  background:
+    linear-gradient(180deg, rgba(17, 32, 21, 0.14), rgba(17, 32, 21, 0.06)),
+    #8ba589;
+}
+
+.radar-overlay--command {
+  top: 12px;
+  left: 336px;
+  right: 338px;
+  z-index: 34;
+}
+
+.radar-command-bar {
+  min-height: 56px;
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: auto minmax(260px, 1fr) auto;
+  align-items: center;
+  gap: 14px;
+  background: rgba(50, 50, 50, 0.9);
+}
+
+.radar-command-bar__brand,
+.radar-command-bar__quick {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.radar-logo-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.radar-logo-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.88);
+  box-shadow: inset 0 0 0 3px rgba(245, 198, 41, 0.88);
+}
+
+.radar-logo-copy {
+  display: flex;
+  align-items: baseline;
+  gap: 2px;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.radar-logo-copy strong {
+  color: #f2f4f6;
+  font-size: 1.2rem;
+  letter-spacing: 0.01em;
+}
+
+.radar-logo-copy em {
+  color: #f5c629;
+  font-style: normal;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.radar-search-field--header {
+  min-width: 0;
+}
+
+.radar-search-field--header input {
+  min-height: 40px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.radar-account-pill {
+  min-height: 38px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f6f8;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radar-burger {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  align-content: center;
+  gap: 4px;
+  padding: 0 10px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.radar-burger span {
+  height: 2px;
+  background: #f2f4f6;
+  border-radius: 999px;
+}
+
+.radar-burger.is-active {
+  border-color: rgba(245, 198, 41, 0.35);
+}
+
+.radar-command-bar__meta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.radar-live-tag--muted {
+  color: #d9d3b0;
+  border-color: rgba(217, 211, 176, 0.24);
+  background: rgba(217, 211, 176, 0.12);
+}
+
+.radar-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  width: min(380px, 92vw);
+  padding: 16px;
+  display: grid;
+  align-content: start;
+  gap: 14px;
+  background: rgba(31, 31, 31, 0.96);
+  border-left: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: -24px 0 60px rgba(0, 0, 0, 0.28);
+  transform: translateX(104%);
+  transition: transform 180ms ease;
+  pointer-events: none;
+}
+
+.radar-menu.is-open {
+  transform: translateX(0);
+  pointer-events: auto;
+}
+
+.radar-menu__header,
+.radar-menu__feature-row,
+.radar-menu__list-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.radar-menu__header h3,
+.radar-menu__section h4 {
+  margin: 0;
+}
+
+.radar-menu__header span,
+.radar-menu__section span {
+  color: rgba(242, 244, 246, 0.66);
+}
+
+.radar-menu__section {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-menu__catalog,
+.radar-menu__catalog-group {
+  display: grid;
+  gap: 10px;
+}
+
+.radar-menu__catalog-item {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-menu__catalog-item small {
+  color: rgba(242, 244, 246, 0.58);
+  font: 600 0.68rem 'IBM Plex Mono', monospace;
+  text-transform: uppercase;
+}
+
+.radar-menu__catalog-item p {
+  margin: 0;
+  color: rgba(242, 244, 246, 0.74);
+  font-size: 0.88rem;
+  line-height: 1.35;
+}
+
+.radar-menu__toggle-grid,
+.radar-setting-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.radar-menu__toggle,
+.radar-setting-toggle {
+  min-height: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: rgba(244, 246, 248, 0.84);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.radar-menu__toggle.is-active,
+.radar-setting-toggle.is-active {
+  color: #222;
+  background: #f5c629;
+  border-color: rgba(245, 198, 41, 0.84);
+}
+
+.radar-menu__layer-list {
+  display: grid;
+  gap: 8px;
+}
+
+.radar-menu__layer-row {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  text-align: left;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f2f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-menu__layer-row.is-active {
+  border-color: rgba(245, 198, 41, 0.32);
+  background: rgba(245, 198, 41, 0.1);
+}
+
+.radar-menu__layer-row div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.radar-menu__layer-row strong {
+  font-size: 0.95rem;
+}
+
+.radar-menu__layer-row span {
+  color: rgba(242, 244, 246, 0.74);
+  font-size: 0.84rem;
+  line-height: 1.35;
+}
+
+.radar-menu__layer-row em {
+  flex-shrink: 0;
+  color: #f5c629;
+  font: 600 0.68rem 'IBM Plex Mono', monospace;
+  font-style: normal;
+  text-transform: uppercase;
+}
+
+.radar-menu__save-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radar-menu__save-row input {
+  flex: 1;
+  min-width: 0;
+  min-height: 36px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(14, 14, 14, 0.52);
+  color: #f2f4f6;
+  padding: 0 12px;
+}
+
+.radar-menu__list {
+  display: grid;
+  gap: 8px;
+}
+
+.radar-menu__list-row button,
+.radar-menu__recent {
+  width: 100%;
+  text-align: left;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #f2f4f6;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.radar-menu__recent {
+  display: grid;
+  gap: 4px;
+}
+
+.radar-menu__feature-row strong {
+  color: #f5c629;
+}
+
+.radar-pane--left {
+  top: 132px;
+  left: 10px;
+  width: 256px;
+  bottom: 88px;
+  overflow-y: auto;
+}
+
+.radar-pane--right {
+  top: 132px;
+  right: 10px;
+  width: 286px;
+  bottom: 88px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.radar-overlay--topright {
+  top: 138px;
+  right: 304px;
+}
+
+.radar-overlay--warning {
+  top: 82px;
+}
+
+.radar-overlay--tools {
+  top: 196px;
+}
+
+.app-shell--radar-console .maplibregl-ctrl-top-right {
+  top: 332px;
+}
+
+.radar-card {
+  background: rgba(55, 55, 55, 0.84);
+}
+
+.radar-flight-card {
+  padding: 10px 10px 9px;
+  background: rgba(83, 83, 83, 0.74);
+}
+
+.radar-card--selected-overlay {
+  min-height: 320px;
+  overflow: hidden;
+}
+
+.radar-view-switch {
+  min-height: 38px;
+  padding: 0 14px;
+}
+
+.radar-dock {
+  gap: 6px;
+  min-height: 64px;
+  padding: 8px 12px;
+  border-radius: 18px;
+}
+
+.radar-dock__button {
+  min-width: 82px;
+  min-height: 48px;
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border-radius: 14px;
+}
+
+.radar-dock__icon {
+  width: 28px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  font: 700 0.68rem 'IBM Plex Mono', monospace;
+  color: #dfe5ea;
+}
+
+.radar-dock__button span:last-child {
+  font-size: 0.86rem;
+}
+
+.radar-selected-media__copy,
+.radar-selected-title,
+.radar-selected-grid strong,
+.radar-card__header > div,
+.radar-info-list > div span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.radar-pane--right > .radar-card:first-child {
+  border-color: rgba(245, 198, 41, 0.22);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+}
+
+.radar-playback {
+  display: grid;
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.radar-playback input[type='range'] {
+  width: 100%;
+}
+
+.radar-playback__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 1180px) {
+  .radar-overlay--command {
+    left: 296px;
+    right: 300px;
+  }
+
+  .radar-pane--left {
+    width: 244px;
+  }
+
+  .radar-pane--right {
+    top: 132px;
+    width: 274px;
+  }
+
+  .radar-overlay--topright {
+    right: 292px;
+  }
+}
+
+@media (max-width: 980px) {
+  .radar-overlay--command {
+    left: 12px;
+    right: 12px;
+  }
+
+  .radar-command-bar {
+    grid-template-columns: 1fr;
+  }
+
+  .radar-command-bar__quick {
+    flex-wrap: wrap;
+  }
+
+  .radar-menu {
+    width: 100%;
+  }
+
+  .radar-pane--left,
+  .radar-pane--right {
+    top: 156px;
   }
 }

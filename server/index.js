@@ -1,7 +1,8 @@
 import express from 'express';
 import path from 'node:path';
 
-import { ROOT_DIR, SERVER_PORT } from './config.js';
+import { resolveAircraftMedia } from './aircraft-media-service.js';
+import { ROOT_DIR, SERVER_HOST, SERVER_PORT } from './config.js';
 import {
   bootstrapAdmin,
   buildSessionResponse,
@@ -11,12 +12,15 @@ import {
   verifyCredentials,
 } from './auth-service.js';
 import { buildDashboardSnapshot } from './dashboard-service.js';
+import { getRecentTrack, startBackgroundTracking } from './live-service.js';
 import { warmupMetadata } from './metadata-service.js';
 import {
   captureSupportOrder,
   createSupportOrder,
   getPayPalPublicConfig,
 } from './paypal-service.js';
+import { getPublicMapFeatures } from './public-data-service.js';
+import { getTrackingStats } from './tracking-store.js';
 
 const app = express();
 app.use(express.json());
@@ -39,7 +43,7 @@ function requireSession(request, response, next) {
 }
 
 app.get('/api/health', (_request, response) => {
-  response.json({ ok: true, service: 'flighttracker-server' });
+  response.json({ ok: true, service: 'whatsupp-server' });
 });
 
 app.get('/api/auth/session', (request, response) => {
@@ -123,11 +127,86 @@ app.get('/api/live', requireSession, async (request, response) => {
   }
 });
 
+app.get('/api/live/track/:icao24', requireSession, async (request, response) => {
+  try {
+    const points = await getRecentTrack(request.params.icao24, {
+      limit: request.query.limit,
+    });
+    response.json({
+      icao24: String(request.params.icao24 ?? '').toLowerCase(),
+      points,
+    });
+  } catch (error) {
+    response.status(502).json({
+      error: error instanceof Error ? error.message : 'Unknown live track failure',
+    });
+  }
+});
+
+app.get('/api/aircraft/media', requireSession, async (request, response) => {
+  try {
+    const media = await resolveAircraftMedia({
+      typecode: request.query.typecode,
+      typeFamily: request.query.typeFamily,
+      manufacturerName: request.query.manufacturerName,
+      model: request.query.model,
+      operator: request.query.operator,
+      owner: request.query.owner,
+    });
+
+    response.json({ media });
+  } catch (error) {
+    response.status(502).json({
+      error: error instanceof Error ? error.message : 'Aircraft media lookup failed',
+    });
+  }
+});
+
+app.get('/api/tracking/status', requireSession, async (_request, response) => {
+  try {
+    const tracking = await getTrackingStats({ objectType: 'aircraft' });
+    response.json({ ok: true, tracking });
+  } catch (error) {
+    response.status(502).json({
+      error: error instanceof Error ? error.message : 'Tracking status failed',
+    });
+  }
+});
+
+app.get('/api/public/features', requireSession, async (request, response) => {
+  try {
+    const layers = String(request.query.layers ?? '')
+      .split(',')
+      .map((value) => value.trim())
+      .filter(Boolean);
+
+    const features = await getPublicMapFeatures({
+      layers,
+      bounds: {
+        west: request.query.west,
+        south: request.query.south,
+        east: request.query.east,
+        north: request.query.north,
+        zoom: request.query.zoom,
+      },
+    });
+
+    response.json(features);
+  } catch (error) {
+    response.status(502).json({
+      error: error instanceof Error ? error.message : 'Public feature lookup failed',
+    });
+  }
+});
+
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.join(ROOT_DIR, 'dist')));
 }
 
-app.listen(SERVER_PORT, () => {
+app.listen(SERVER_PORT, SERVER_HOST, () => {
   warmupMetadata();
-  console.log(`flighttracker server listening on http://localhost:${SERVER_PORT}`);
+  startBackgroundTracking().catch((error) => {
+    console.error('background tracking bootstrap failed', error);
+  });
+  console.log(`whatsupp server listening on http://${SERVER_HOST}:${SERVER_PORT}`);
 });

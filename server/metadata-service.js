@@ -89,7 +89,7 @@ async function downloadFile(url, targetPath) {
   const tmpPath = `${targetPath}.tmp`;
   const response = await fetch(url, {
     headers: {
-      'User-Agent': 'flighttracker-dashboard/1.0 (+https://github.com/meinzeug/flighttracker)',
+      'User-Agent': 'whatsupp-dashboard/1.0 (+https://github.com/meinzeug/whatsupp)',
     },
   });
 

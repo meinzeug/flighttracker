@@ -1,7 +1,8 @@
 import { classifyAircraft } from './classification.js';
 import { estimateEmissions } from './emissions.js';
-import { getLiveSnapshot, getPlaybackFrames, getSnapshotAt } from './live-service.js';
+import { getLiveRefreshPolicy, getLiveSnapshot, getPlaybackFrames, getSnapshotAt } from './live-service.js';
 import { getMetadataStatus, getTypeRecord, resolveAircraftMetadata } from './metadata-service.js';
+import { getTrackingStats } from './tracking-store.js';
 
 function topBuckets(items, keyFn, labelFn, limit = 10) {
   const buckets = new Map();
@@ -39,14 +40,64 @@ function topBuckets(items, keyFn, labelFn, limit = 10) {
     }));
 }
 
+function defaultMetadataStatus() {
+  return {
+    docCatalogReady: false,
+    aircraftDbReady: false,
+    lookupDbReady: false,
+    docCatalogError: null,
+    aircraftDbError: null,
+    lookupDbError: null,
+    typeCatalogSize: 0,
+    aircraftLookupCacheSize: 0,
+    docCatalogBytes: 0,
+    aircraftDbBytes: 0,
+    aircraftDbSource: null,
+  };
+}
+
 export async function buildDashboardSnapshot({ at = null } = {}) {
   const live = at ? (await getSnapshotAt(at)) ?? (await getLiveSnapshot()) : await getLiveSnapshot();
-  const metadata = await resolveAircraftMetadata(live.states.map((state) => state.icao24));
+  const liveStates = Array.isArray(live.states) ? live.states : [];
+  let metadata = new Map();
+  let metadataWarning = null;
+
+  if (liveStates.length) {
+    try {
+      metadata = await resolveAircraftMetadata(liveStates.map((state) => state.icao24));
+    } catch (error) {
+      metadataWarning =
+        error instanceof Error ? `Aircraft metadata unavailable: ${error.message}` : 'Aircraft metadata unavailable.';
+    }
+  }
+
+  const typeRecordCache = new Map();
   const aircraft = [];
 
-  for (const state of live.states) {
+  for (const state of liveStates) {
     const aircraftRecord = metadata.get(state.icao24) ?? null;
-    const typeRecord = await getTypeRecord(aircraftRecord?.typecode);
+    const typecode = aircraftRecord?.typecode?.trim().toUpperCase() ?? null;
+    let typeRecord = null;
+
+    if (typecode) {
+      if (typeRecordCache.has(typecode)) {
+        typeRecord = typeRecordCache.get(typecode);
+      } else {
+        try {
+          typeRecord = await getTypeRecord(typecode);
+        } catch (error) {
+          if (!metadataWarning) {
+            metadataWarning =
+              error instanceof Error
+                ? `Aircraft type catalog unavailable: ${error.message}`
+                : 'Aircraft type catalog unavailable.';
+          }
+        }
+
+        typeRecordCache.set(typecode, typeRecord);
+      }
+    }
+
     const classification = classifyAircraft(state, aircraftRecord, typeRecord);
     const emissions = estimateEmissions(state, aircraftRecord, typeRecord, classification);
 
@@ -87,13 +138,30 @@ export async function buildDashboardSnapshot({ at = null } = {}) {
   );
 
   const resolvedTypes = aircraft.filter((entry) => entry.typecode || entry.model).length;
-  const metadataStatus = await getMetadataStatus();
+  const [metadataStatus, playbackFrames, trackingStatus] = await Promise.all([
+    getMetadataStatus().catch(() => defaultMetadataStatus()),
+    getPlaybackFrames().catch(() => []),
+    getTrackingStats({ objectType: 'aircraft' }).catch(() => ({
+      objectType: 'aircraft',
+      snapshotCount: 0,
+      objectCount: 0,
+      positionCount: 0,
+      oldestObservedAt: null,
+      newestObservedAt: null,
+      retentionDays: 0,
+      storagePath: null,
+    })),
+  ]);
+  const warnings = [live.error ?? null, metadataWarning].filter(Boolean);
+  const liveRefreshPolicy = getLiveRefreshPolicy();
 
   return {
     observedAt: live.observedAt,
     fetchedAt: live.fetchedAt,
     stale: live.stale ?? false,
-    warning: live.error ?? null,
+    warning: warnings.length ? warnings.join(' ') : null,
+    refreshIntervalMs: liveRefreshPolicy.refreshIntervalMs,
+    liveAccessConfigured: liveRefreshPolicy.upstreamConfigured,
     mode: live.playback ? 'playback' : 'live',
     totals: {
       airborneAircraft: aircraft.length,
@@ -107,6 +175,7 @@ export async function buildDashboardSnapshot({ at = null } = {}) {
       resolvedAircraft: resolvedTypes,
       coverageRatio: aircraft.length ? Number((resolvedTypes / aircraft.length).toFixed(3)) : 0,
     },
+    tracking: trackingStatus,
     filters: {
       segments: [...new Set(aircraft.map((entry) => entry.operationSegment))].sort(),
       emitterCategories: [...new Set(aircraft.map((entry) => entry.emitterCategory))].sort(),
@@ -137,7 +206,7 @@ export async function buildDashboardSnapshot({ at = null } = {}) {
       active: Boolean(live.playback),
       requestedAt: at,
       selectedObservedAt: live.observedAt,
-      frames: getPlaybackFrames(),
+      frames: playbackFrames,
     },
     aircraft,
     assumptions: {

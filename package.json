@@ -1,7 +1,7 @@
 {
-  "name": "flighttracker",
+  "name": "whatsupp",
   "version": "1.0.0",
-  "description": "Live-Flugradar mit OpenSky, Typanalyse und Emissionsschaetzung",
+  "description": "Open-data tracking console for aircraft, infrastructure, events, and situational awareness",
   "private": true,
   "type": "module",
   "scripts": {
@@ -20,15 +20,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/meinzeug/flighttracker.git"
+    "url": "git+https://github.com/meinzeug/whatsupp.git"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/meinzeug/flighttracker/issues"
+    "url": "https://github.com/meinzeug/whatsupp/issues"
   },
-  "homepage": "https://github.com/meinzeug/flighttracker#readme",
+  "homepage": "https://github.com/meinzeug/whatsupp#readme",
   "dependencies": {
     "better-sqlite3": "^12.6.2",
     "csv-parse": "^6.1.0",

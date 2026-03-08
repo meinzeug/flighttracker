@@ -1,22 +1,22 @@
-# Kiosk / USB Start
+# Kiosk / Desktop Launch
 
-Dieses Verzeichnis ist die lokale Betriebsbasis fuer einen einfachen Linux-Kioskstart.
+This folder contains the local launch helpers for running `whatsupp` as a desktop or kiosk-style console.
 
-## Was enthalten ist
+## Included Files
 
-- `start-flighttracker.sh`
-  - startet den lokalen PM2-Stack
-  - oeffnet danach `http://localhost:3000`
-- `flighttracker-kiosk.desktop`
-  - Desktop-Entry fuer einen lokalen Autostart oder Launcher
+- `start-whatsupp.sh`
+  - starts or restarts the PM2 stack
+  - opens `http://localhost:23666`
+- `whatsupp-kiosk.desktop`
+  - desktop entry for autostart or manual launcher placement
 
-## Typischer Einsatz
+## Typical Setup
 
-1. Repository auf das Zielsystem oder einen Live-USB kopieren.
-2. `npm install` im Projekt ausfuehren.
-3. Optional PayPal- und Server-Umgebungsvariablen setzen.
-4. `deploy/kiosk/flighttracker-kiosk.desktop` in den Autostart oder auf den Desktop legen.
+1. Copy the repository to the target machine.
+2. Run `npm install`.
+3. Ensure the PM2 ports in `ecosystem.config.cjs` fit the target environment.
+4. Place `deploy/kiosk/whatsupp-kiosk.desktop` into autostart or onto the desktop.
 
-## Hinweis
+## Operational Note
 
-Die Datei ist bewusst nur ein lokales Startprofil. Ein vollwertiges haertendes USB-Image mit verschluesseltem Persistenzspeicher, BIOS/UEFI-Hardening und Offline-Updatepfad ist ein eigener Ausbauschritt.
+This is a lightweight local launch profile. A hardened kiosk image with locked-down browser policy, encrypted persistence, controlled updates, and dedicated device management is a separate deployment step.
