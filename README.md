@@ -45,8 +45,33 @@ npm run dev
 npm run build
 npm run preview
 npm run start
+npm run pm2:start
+npm run pm2:restart
+npm run pm2:stop
+npm run pm2:delete
+npm run pm2:status
+pm2 logs
 python3 current_aircraft_count.py --raw
 ```
+
+## PM2
+
+Der lokale Entwicklungsstack ist direkt mit PM2 managebar.
+
+```bash
+npm run pm2:start
+npm run pm2:status
+npm run pm2:restart
+npm run pm2:stop
+npm run pm2:delete
+```
+
+Gestartet werden zwei Prozesse:
+
+- `flighttracker-web` auf `http://localhost:6666`
+- `flighttracker-api` auf `http://localhost:6667`
+
+Die Konfiguration liegt in `ecosystem.config.cjs`.
 
 ## Umgebungsvariablen
 
