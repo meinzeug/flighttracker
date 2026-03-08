@@ -108,8 +108,8 @@ export function bootstrapAdmin({ username, password }) {
     throw new Error('Benutzername muss mindestens 3 Zeichen lang sein.');
   }
 
-  if (normalizedPassword.length < 10) {
-    throw new Error('Passwort muss mindestens 10 Zeichen lang sein.');
+  if (normalizedPassword.length < 8) {
+    throw new Error('Passwort muss mindestens 8 Zeichen lang sein.');
   }
 
   const passwordHash = createPasswordHash(normalizedPassword);
