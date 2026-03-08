@@ -12,8 +12,8 @@ const aircraftDbFilename = path.basename(new URL(aircraftDbUrl).pathname);
 
 export const ROOT_DIR = rootDir;
 export const CACHE_DIR = cacheDir;
-export const CLIENT_PORT = Number(process.env.CLIENT_PORT ?? 6666);
-export const SERVER_PORT = Number(process.env.SERVER_PORT ?? 6667);
+export const CLIENT_PORT = Number(process.env.CLIENT_PORT ?? 3000);
+export const SERVER_PORT = Number(process.env.SERVER_PORT ?? 3001);
 export const LIVE_CACHE_TTL_MS = Number(process.env.LIVE_CACHE_TTL_MS ?? 30000);
 export const LIVE_URL = 'https://opensky-network.org/api/states/all?extended=1';
 export const DOC8643_URL =

@@ -7,7 +7,7 @@ module.exports = {
       interpreter: 'node',
       env: {
         NODE_ENV: 'development',
-        SERVER_PORT: '6667',
+        SERVER_PORT: '3001',
       },
       time: true,
       autorestart: true,
@@ -19,7 +19,7 @@ module.exports = {
       cwd: __dirname,
       script: './node_modules/vite/bin/vite.js',
       interpreter: 'node',
-      args: '--host :: --port 6666',
+      args: '--host :: --port 3000',
       env: {
         NODE_ENV: 'development',
       },

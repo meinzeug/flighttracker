@@ -8,7 +8,7 @@ Live-Flugradar mit OpenSky, Typanalyse und einer transparenten Emissionsschaetzu
 - gruppiert nach Betriebssegmenten wie `Passenger`, `Cargo`, `Military / Government`, `Business / Private`, `Rotorcraft` und weiteren Klassen
 - schaetzt pro Flugzeug und fuer die Gesamtflotte den momentanen Kerosinverbrauch sowie den direkten `CO2`-Ausstoss
 - bietet ein Browser-Frontend mit Radar-Look, interaktiver Weltkarte und Filterleisten
-- laeuft lokal mit `npm run dev` auf Port `6666`
+- laeuft lokal mit `npm run dev` auf Port `3000`
 
 ## Stack
 
@@ -35,8 +35,8 @@ npm run dev
 
 Danach:
 
-- Frontend: `http://localhost:6666`
-- API: `http://localhost:6667`
+- Frontend: `http://localhost:3000`
+- API: `http://localhost:3001`
 
 ## Wichtige Scripts
 
@@ -68,8 +68,8 @@ npm run pm2:delete
 
 Gestartet werden zwei Prozesse:
 
-- `flighttracker-web` auf `http://localhost:6666`
-- `flighttracker-api` auf `http://localhost:6667`
+- `flighttracker-web` auf `http://localhost:3000`
+- `flighttracker-api` auf `http://localhost:3001`
 
 Die Konfiguration liegt in `ecosystem.config.cjs`.
 
@@ -77,8 +77,8 @@ Die Konfiguration liegt in `ecosystem.config.cjs`.
 
 ```bash
 OPENSKY_TOKEN=dein_token
-CLIENT_PORT=6666
-SERVER_PORT=6667
+CLIENT_PORT=3000
+SERVER_PORT=3001
 LIVE_CACHE_TTL_MS=30000
 AIRCRAFT_DB_URL=https://s3.opensky-network.org/data-samples/metadata/aircraft-database-complete-2024-10.csv
 DOC8643_URL=https://s3.opensky-network.org/data-samples/metadata/doc8643AircraftTypes.csv
