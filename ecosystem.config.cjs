@@ -19,7 +19,7 @@ module.exports = {
       cwd: __dirname,
       script: './node_modules/vite/bin/vite.js',
       interpreter: 'node',
-      args: '--host 0.0.0.0 --port 6666',
+      args: '--host :: --port 6666',
       env: {
         NODE_ENV: 'development',
       },
